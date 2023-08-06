@@ -18,7 +18,7 @@ const Sidebar = () => {
       variant="permanent"
       sx={{
         paddingRight: 300,
-        "& .MuiPaper-root": {
+        "& > .MuiPaper-root": {
           width: open ? "10%" : "3%",
         },
       }}

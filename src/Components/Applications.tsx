@@ -24,6 +24,7 @@ import {
   GridColDef,
   GridRowId,
   GridRowsProp,
+  GridRowModel,
   GridRowModes,
   GridRowModesModel,
   GridRenderEditCellParams,
@@ -35,6 +36,7 @@ import moment from "moment";
 import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
 import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
+import CancelIcon from "@mui/icons-material/Close";
 
 interface PropTypes {
   cookie: {
@@ -68,6 +70,9 @@ export default function Applications() {
   const [pageSize, setPageSize] = React.useState<number>(20);
   const [rowId, setRowId] = React.useState<number | null>();
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
+    {}
+  );
 
   const CustomEditComponent: GridColDef["renderCell"] = (
     params: GridRenderEditCellParams
@@ -104,6 +109,22 @@ export default function Applications() {
       width: 200,
       editable: true,
       sortable: true,
+      renderCell: (params) => (
+        <CustomDisabledTextField
+          multiline
+          variant={"standard"}
+          fullWidth
+          InputProps={{ disableUnderline: true }}
+          maxRows={4}
+          disabled={true}
+          sx={{
+            padding: 1,
+            color: "primary.main",
+          }}
+          defaultValue={params.row.notes}
+          value={params.row.notes}
+        />
+      ),
       // This will render the cell how you want it. Instead of a regular cell, I want to create a textfield so I don't have to scroll
       // right when the message is too long(textfield wraps text around)
       // renderCell: (params) => (
@@ -171,6 +192,22 @@ export default function Applications() {
       width: 150,
       editable: true,
       sortable: true,
+      renderCell: (params) => (
+        <CustomDisabledTextField
+          multiline
+          variant={"standard"}
+          fullWidth
+          InputProps={{ disableUnderline: true }}
+          maxRows={4}
+          disabled={true}
+          sx={{
+            padding: 1,
+            color: "primary.main",
+          }}
+          defaultValue={params.row.notes}
+          value={params.row.notes}
+        />
+      ),
       // renderCell: (params) => (
       //   <CustomDisabledTextField
       //     multiline
@@ -195,6 +232,22 @@ export default function Applications() {
       // hide: true,
       editable: true,
       sortable: true,
+      renderCell: (params) => (
+        <CustomDisabledTextField
+          multiline
+          variant={"standard"}
+          fullWidth
+          InputProps={{ disableUnderline: true }}
+          maxRows={4}
+          disabled={true}
+          sx={{
+            padding: 1,
+            color: "primary.main",
+          }}
+          defaultValue={params.row.notes}
+          value={params.row.notes}
+        />
+      ),
       // renderCell: (params) => (
       //   <CustomDisabledTextField
       //     multiline
@@ -230,15 +283,70 @@ export default function Applications() {
     {
       field: "actions",
       headerName: "Actions",
-      width: 100,
+      width: 200,
       renderCell: (params) => {
+        const isInEditMode =
+          rowModesModel[params.id]?.mode === GridRowModes.Edit;
+        // console.log("what is isInEditMode: ", isInEditMode);
+        if (isInEditMode) {
+          return (
+            <>
+              <Button
+                onClick={() => setRowSave(params.row.jobId)}
+                variant="contained"
+              >
+                Save
+              </Button>
+              <pre> </pre>
+              <Button
+                onClick={() => setRowCancel(params.row.jobId)}
+                variant="contained"
+              >
+                Cancel
+              </Button>
+            </>
+          );
+        }
         return (
-          <Button
-            onClick={() => handleDelete(params.row.jobId)}
-            variant="contained"
-          >
-            Delete
-          </Button>
+          <>
+            <Button
+              sx={{ mr: 1 }}
+              onClick={() => setRowEdit(params.row.jobId)}
+              variant="contained"
+            >
+              Update
+            </Button>
+            <br />
+            <Button
+              onClick={() => handleDelete(params.row.jobId)}
+              variant="contained"
+            >
+              Delete
+            </Button>
+          </>
+        );
+      },
+      renderEditCell: (params) => {
+        // const isInEditMode =
+        //   rowModesModel[params.id]?.mode === GridRowModes.Edit;
+        // console.log("what is isInEditMode: ", isInEditMode);
+        // if (isInEditMode) {
+        return (
+          <>
+            <Button
+              onClick={() => setRowSave(params.row.contactId)}
+              variant="contained"
+            >
+              Save
+            </Button>
+            <br />
+            <GridActionsCellItem
+              onClick={() => setRowCancel(params.row.contactId)}
+              icon={<CancelIcon />}
+              label="Cancel"
+              className="textPrimary"
+            />
+          </>
         );
       },
     },
@@ -253,6 +361,7 @@ export default function Applications() {
   }
 
   React.useEffect(() => {
+    setLoading(true);
     // console.log("Hello from JobsTable");
     // Grab data from backend on page load:
     // setLoading(true);
@@ -265,7 +374,7 @@ export default function Applications() {
     //   setAllJobs(response.data);
     //   setLoading(false);
     // });
-    // setAllJobs(jobsData);
+    setAllJobs(tableData);
     setLoading(false);
   }, []);
 
@@ -288,18 +397,18 @@ export default function Applications() {
   const handleAddJobFormSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // const newJob = {
-    //   jobId: randomId(),
-    //   jobTitle: addJob.jobTitle,
-    //   dateCreated: addJob.dateCreated,
-    //   priority: addJob.priority,
-    //   status: addJob.status,
-    //   location: addJob.location,
-    //   notes: addJob.notes,
-    //   company: addJob.company,
-    //   dateApplied: addJob.dateApplied,
-    //   salary: addJob.salary,
-    // };
+    const newJob = {
+      jobId: randomId(),
+      jobTitle: addJob.jobTitle,
+      dateCreated: addJob.dateCreated,
+      priority: addJob.priority,
+      status: addJob.status,
+      location: addJob.location,
+      notes: addJob.notes,
+      company: addJob.company,
+      dateApplied: addJob.dateApplied,
+      salary: addJob.salary,
+    };
     // Axios.post(`${baseURL}/jobs`, newJob, {
     //   headers: {
     //     Authorization: `Bearer ${store.session}`,
@@ -316,7 +425,7 @@ export default function Applications() {
     //   // console.log("2nd localhost res is: ", response.data);
     // });
     // // console.log("add job: ", newJob);
-    // setAllJobs([...allJobs, newJob]);
+    setAllJobs([...allJobs, newJob]);
   };
 
   /*------------------------------------Update/Edit Cell Dialog Logic------------------------------------*/
@@ -342,20 +451,20 @@ export default function Applications() {
     const { newRow, oldRow, resolve } = confirmData;
     // console.log("New row is: ", newRow, newRow.jobId);
     // If user responds yes, send new row to database, else resolve old row back:
-    // if (response == "Yes") {
-    //   Axios.put(`${baseURL}/jobs/${newRow.jobId}`, newRow, {
-    //     headers: {
-    //       Authorization: `Bearer ${store.session}`,
-    //     },
-    //   }).then((response) => {
-    //     // setAllJobs(response.data);
-    //     // setPosts(response.data);
-    //     console.log("3nd localhost res is: ", response.data);
-    //     resolve(newRow);
-    //   });
-    // } else if (response == "No") {
-    //   resolve(oldRow);
-    // }
+    if (response == "Yes") {
+      //   Axios.put(`${baseURL}/jobs/${newRow.jobId}`, newRow, {
+      //     headers: {
+      //       Authorization: `Bearer ${store.session}`,
+      //     },
+      //   }).then((response) => {
+      //     // setAllJobs(response.data);
+      //     // setPosts(response.data);
+      //     console.log("3nd localhost res is: ", response.data);
+      resolve(newRow);
+      //   });
+    } else if (response == "No") {
+      resolve(oldRow);
+    }
     setConfirmData(null);
   };
 
@@ -392,6 +501,9 @@ export default function Applications() {
   const handleDelete = (jobId: number) => {
     // const getDeleteItem = allJobs.filter((row) => row.jobId === jobId);
     const delete_record = { jobId: jobId };
+    const updatedApplications = allJobs.filter((row) => row.jobId !== jobId);
+    // console.log("updated contacts are: ", contactId, updatedContacts);
+    setAllJobs(updatedApplications);
     // Axios.delete(`${baseURL}/jobs/${jobId}`, {
     //   headers: {
     //     Authorization: `Bearer ${store.session}`,
@@ -418,6 +530,20 @@ export default function Applications() {
   // rows: the actual data for each row(it does the map function)
   // Update stuff is a little weird-- requires making a promise and resolving it
   // After that, it is just the regular Form Submit stuff
+
+  const setRowEdit = (id: GridRowId) => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+  const setRowSave = (id: GridRowId) => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+  const setRowCancel = (id: GridRowId) => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <Sidebar />
@@ -456,8 +582,10 @@ export default function Applications() {
                       // rowsPerPageOptions={[20, 40, 60]}
                       // autoPageSize={true}
                       // experimentalFeatures={{ newEditingApi: true }}
+                      editMode="row"
                       processRowUpdate={processRowUpdate}
                       onProcessRowUpdateError={handleProcessRowUpdateError}
+                      rowModesModel={rowModesModel}
                     />
                   </Paper>
                   <h2>Add a Job</h2>

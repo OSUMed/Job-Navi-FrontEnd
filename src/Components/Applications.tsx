@@ -353,7 +353,7 @@ export default function Applications() {
   ];
   const dataGridStyles: SxProps = {
     // Required for Data table creation, if data grid doesn't have a height, it errors out(MUI bug):
-    height: 500,
+    height: 600,
   };
 
   function preventDefault(event: React.MouseEvent) {
@@ -545,7 +545,7 @@ export default function Applications() {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Sidebar />
       <Box
         component="main"
@@ -556,140 +556,133 @@ export default function Applications() {
           overflow: "auto",
         }}
       >
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Grid item xs={12} md={8} lg={9}>
-            <Paper
-              sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <React.Fragment>
-                <h2>MUI TABLE</h2>
-                <TableContainer component={Paper}>
-                  <Paper sx={dataGridStyles}>
-                    {renderConfirmDialog()}
-                    <DataGrid
-                      columns={columns}
-                      rows={allJobs}
-                      getRowHeight={() => "auto"}
-                      getRowId={(row) => row.jobId}
-                      // onPageSizeChange={(pageSizeChoice: number) =>
-                      //   setPageSize(pageSizeChoice)
-                      // }
-                      // pageSize={pageSize}
-                      // rowsPerPageOptions={[20, 40, 60]}
-                      // autoPageSize={true}
-                      // experimentalFeatures={{ newEditingApi: true }}
-                      editMode="row"
-                      processRowUpdate={processRowUpdate}
-                      onProcessRowUpdateError={handleProcessRowUpdateError}
-                      rowModesModel={rowModesModel}
-                    />
-                  </Paper>
-                  <h2>Add a Job</h2>
-                  <form onSubmit={handleAddJobFormSubmit}>
-                    <TextField
-                      type="text"
-                      name="jobTitle"
-                      required
-                      placeholder="Enter a job name.."
-                      onChange={handleChangeAddJob}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="date"
-                      name="dateCreated"
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                      // value={addJob.job_location}
-                      required
-                      placeholder="Enter location.."
-                      onChange={handleChangeAddJob}
-                    ></TextField>
-                    <TextField
-                      type="text"
-                      name="priority"
-                      // value={addJob.date_posted}
-                      placeholder="Enter priority.."
-                      onChange={handleChangeAddJob}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <br />
-                    <TextField
-                      type="text"
-                      name="status"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter status.."
-                      onChange={handleChangeAddJob}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="text"
-                      name="salary"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter salary.."
-                      onChange={handleChangeAddJob}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="text"
-                      name="location"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter location.."
-                      onChange={handleChangeAddJob}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <br />
-                    <TextField
-                      type="text"
-                      name="notes"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter notes.."
-                      onChange={handleChangeAddJob}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="text"
-                      name="company"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter a company name.."
-                      onChange={handleChangeAddJob}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="date"
-                      name="dateApplied"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter a date applied.."
-                      onChange={handleChangeAddJob}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <br />
-                    <Button type="submit" variant="contained" color="primary">
-                      Add Job
-                    </Button>
-                  </form>
-                </TableContainer>
-              </React.Fragment>
-            </Paper>
-          </Grid>
-        </Container>
+        <Paper
+          sx={{
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+          }}
+        >
+          <h2>MUI TABLE</h2>
+          <Paper sx={dataGridStyles}>
+            {renderConfirmDialog()}
+            <DataGrid
+              columns={columns}
+              rows={allJobs}
+              getRowHeight={() => "auto"}
+              getRowId={(row) => row.jobId}
+              // onPageSizeChange={(pageSizeChoice: number) =>
+              //   setPageSize(pageSizeChoice)
+              // }
+              // pageSize={pageSize}
+              // rowsPerPageOptions={[20, 40, 60]}
+              // autoPageSize={true}
+              // experimentalFeatures={{ newEditingApi: true }}
+              editMode="row"
+              processRowUpdate={processRowUpdate}
+              onProcessRowUpdateError={handleProcessRowUpdateError}
+              rowModesModel={rowModesModel}
+            />
+          </Paper>
+          <h2>Add a Job</h2>
+          <form onSubmit={handleAddJobFormSubmit}>
+            <TextField
+              type="text"
+              name="jobTitle"
+              required
+              placeholder="Enter a job name.."
+              onChange={handleChangeAddJob}
+              variant="outlined"
+              style={{ width: "200px", margin: "5px" }}
+            ></TextField>
+            <TextField
+              type="date"
+              name="dateCreated"
+              variant="outlined"
+              style={{ width: "200px", margin: "5px" }}
+              // value={addJob.job_location}
+              required
+              placeholder="Enter location.."
+              onChange={handleChangeAddJob}
+            ></TextField>
+            <TextField
+              type="text"
+              name="priority"
+              // value={addJob.date_posted}
+              placeholder="Enter priority.."
+              onChange={handleChangeAddJob}
+              variant="outlined"
+              style={{ width: "200px", margin: "5px" }}
+            ></TextField>
+            <br />
+            <TextField
+              type="text"
+              name="status"
+              // value={addJob.salary_est}
+              required
+              placeholder="Enter status.."
+              onChange={handleChangeAddJob}
+              variant="outlined"
+              style={{ width: "200px", margin: "5px" }}
+            ></TextField>
+            <TextField
+              type="text"
+              name="salary"
+              // value={addJob.salary_est}
+              required
+              placeholder="Enter salary.."
+              onChange={handleChangeAddJob}
+              variant="outlined"
+              style={{ width: "200px", margin: "5px" }}
+            ></TextField>
+            <TextField
+              type="text"
+              name="location"
+              // value={addJob.salary_est}
+              required
+              placeholder="Enter location.."
+              onChange={handleChangeAddJob}
+              variant="outlined"
+              style={{ width: "200px", margin: "5px" }}
+            ></TextField>
+            <br />
+            <TextField
+              type="text"
+              name="notes"
+              // value={addJob.salary_est}
+              required
+              placeholder="Enter notes.."
+              onChange={handleChangeAddJob}
+              variant="outlined"
+              style={{ width: "200px", margin: "5px" }}
+            ></TextField>
+            <TextField
+              type="text"
+              name="company"
+              // value={addJob.salary_est}
+              required
+              placeholder="Enter a company name.."
+              onChange={handleChangeAddJob}
+              variant="outlined"
+              style={{ width: "200px", margin: "5px" }}
+            ></TextField>
+            <TextField
+              type="date"
+              name="dateApplied"
+              // value={addJob.salary_est}
+              required
+              placeholder="Enter a date applied.."
+              onChange={handleChangeAddJob}
+              variant="outlined"
+              style={{ width: "200px", margin: "5px" }}
+            ></TextField>
+            <br />
+            <Button type="submit" variant="contained" color="primary">
+              Add Job
+            </Button>
+          </form>
+        </Paper>
       </Box>
     </Box>
   );

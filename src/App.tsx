@@ -12,7 +12,16 @@ const App: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="contacts" element={<Contacts />} />
+        <Route
+          path="contacts"
+          element={
+            <Contacts
+              cookie={{
+                session: "",
+              }}
+            />
+          }
+        />
         <Route path="applications" element={<Applications />} />
         <Route path="notes" element={<Notes />} />
       </Routes>

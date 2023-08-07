@@ -43,8 +43,8 @@ import Sidebar from "./Sidebar";
 import Title from "./Title";
 
 // Reusable Component Imports:
-import CustomEditComponent from "./Common/CustomEditComponent"; // Update with the correct path
-import Form from "./Common/Form";
+import CustomEditComponent from "./CustomEditComponent"; // Update with the correct path
+import Form from "./Form";
 interface PropTypes {
   cookie: {
     session: string;

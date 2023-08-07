@@ -1,42 +1,46 @@
 import * as React from "react";
-
-import Sidebar from "./Sidebar";
-import Container from "@mui/material/Container";
-import TableContainer from "@mui/material/TableContainer";
-import Paper from "@mui/material/Paper";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import LinearProgress from "@mui/material/LinearProgress";
 import {
+  Link,
+  Table,
+  TableContainer,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  Dialog,
+  Box,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Container,
+  Grid,
   Autocomplete,
   Button,
-  Grid,
   TextField,
   SxProps,
-  Box,
 } from "@mui/material";
+import { Close as CancelIcon } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
-import Title from "./Title";
 import {
   DataGrid,
   GridColDef,
+  GridRowModel,
   GridRowId,
   GridRowsProp,
-  GridRowModel,
   GridRowModes,
   GridRowModesModel,
   GridRenderEditCellParams,
+  GridRenderCellParams,
   useGridApiContext,
-  GridActionsCellItem,
   GridToolbar,
+  GridActionsCellItem,
 } from "@mui/x-data-grid";
-import moment from "moment";
 import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
-import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
-import CancelIcon from "@mui/icons-material/Close";
+import LinearProgress from "@mui/material/LinearProgress";
+import Sidebar from "./Sidebar";
+import Title from "./Title";
 
 interface PropTypes {
   cookie: {
@@ -197,6 +201,7 @@ export default function Applications() {
           value={params.row.notes}
         />
       ),
+      renderEditCell: CustomEditComponent,
       // renderCell: (params) => (
       //   <CustomDisabledTextField
       //     multiline
@@ -341,14 +346,14 @@ export default function Applications() {
         return (
           <>
             <Button
-              onClick={() => setRowSave(params.row.contactId)}
+              onClick={() => setRowSave(params.row.jobId)}
               variant="contained"
             >
               Save
             </Button>
             <br />
             <GridActionsCellItem
-              onClick={() => setRowCancel(params.row.contactId)}
+              onClick={() => setRowCancel(params.row.jobId)}
               icon={<CancelIcon />}
               label="Cancel"
               className="textPrimary"
@@ -360,7 +365,7 @@ export default function Applications() {
   ];
   const dataGridStyles: SxProps = {
     // Required for Data table creation, if data grid doesn't have a height, it errors out(MUI bug):
-    height: 600,
+    height: 500,
   };
 
   function preventDefault(event: React.MouseEvent) {
@@ -384,8 +389,6 @@ export default function Applications() {
     setAllJobs(tableData);
     setLoading(false);
   }, []);
-
-  //if (allJobs) return null;
 
   /*------------------------------------Create/Add Row Logic------------------------------------*/
 
@@ -467,8 +470,8 @@ export default function Applications() {
       //     // setAllJobs(response.data);
       //     // setPosts(response.data);
       //     console.log("3nd localhost res is: ", response.data);
-      resolve(newRow);
       //   });
+      resolve(newRow);
     } else if (response == "No") {
       resolve(oldRow);
     }
@@ -545,7 +548,7 @@ export default function Applications() {
   };
 
   return (
-    <Box sx={{ display: "flex", backgroundColor: "#F5F5F5" }}>
+    <Box sx={{ display: "flex" }}>
       <Sidebar />
       <Box
         component="main"

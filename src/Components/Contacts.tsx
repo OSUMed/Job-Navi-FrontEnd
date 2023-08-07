@@ -1,24 +1,27 @@
 import * as React from "react";
-import Link from "@mui/material/Link";
-import Table from "@mui/material/Table";
-import TableContainer from "@mui/material/TableContainer";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import CancelIcon from "@mui/icons-material/Close";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-
-import Box from "@mui/material/Box";
-import { Autocomplete, Button, TextField, SxProps } from "@mui/material";
+import {
+  Link,
+  Table,
+  TableContainer,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  Dialog,
+  Box,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Container,
+  Grid,
+  Autocomplete,
+  Button,
+  TextField,
+  SxProps,
+} from "@mui/material";
+import { Close as CancelIcon } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
-import Title from "./Title";
 import {
   DataGrid,
   GridColDef,
@@ -30,13 +33,14 @@ import {
   GridRenderEditCellParams,
   GridRenderCellParams,
   useGridApiContext,
+  GridToolbar,
   GridActionsCellItem,
 } from "@mui/x-data-grid";
-import moment from "moment";
 import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
-import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
 import Sidebar from "./Sidebar";
+import Title from "./Title";
+
 // import Axios from "axios";
 // const baseURL = "http://localhost:3003";
 // Interface for Jobs:
@@ -429,41 +433,7 @@ export default function Contacts({ cookie }: PropTypes) {
     //   console.log("3nd localhost res is: ", response.data);
     // });
   };
-  const handleUpdate = (contactId: number, row: any, params: any) => {
-    // const getDeleteItem = allContacts.filter(
-    //   (row) => row.contactId === contactId
-    // );
-    // const updatedContacts = allContacts.filter(
-    //   (row) => row.contactId !== contactId
-    // );
-    console.log("what is row? ", row);
-    console.log("what is params? ", params);
-    // setAllContacts(
-    //   rows.map((row) => (row.id === newRow.id ? updatedRow : row))
-    // );
-    // console.log("updated contacts are: ", contactId, updatedContacts);
-    // setAllContacts(updatedContacts);
-    // const delete_record = { contactId: contactId };
-    // Axios.delete(`${baseURL}/contact/${jobId}`, {
-    //   headers: {
-    //     Authorization: `Bearer ${cookie.session}`,
-    //   },
-    // }).then((response) => {
-    //   Axios.get(`${baseURL}/contacts`, {
-    //     headers: {
-    //       Authorization: `Bearer ${cookie.session}`,
-    //     },
-    //   }).then((response) => {
-    //     setAllContacts(response.data);
-    //   });
-    //   console.log("3nd localhost res is: ", response.data);
-    // });
-  };
-  // const setRowEdit = () => {
-  //   const myNum = 95;
-  //   return { myNum: { mode: GridRowModes.Edit } };
-  //   // return { 96: { mode: GridRowModes.Edit } };
-  // };
+
   const setRowEdit = (id: GridRowId) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
@@ -477,12 +447,6 @@ export default function Contacts({ cookie }: PropTypes) {
     });
   };
 
-  // Below we have <DataGrid> like a component and we pass options into it, like how we pass parent props to childs. Though
-  // here the child component(datagrid), is an API in MUI.
-  // columns: what the headers and associated column configuations are
-  // rows: the actual data for each row(it does the map function)
-  // Update stuff is a little weird-- requires making a promise and resolving it
-  // After that, it is just the regular Form Submit stuff
   return (
     <Box sx={{ display: "flex" }}>
       <Sidebar />
@@ -524,6 +488,9 @@ export default function Contacts({ cookie }: PropTypes) {
                       processRowUpdate={processRowUpdate}
                       onProcessRowUpdateError={handleProcessRowUpdateError}
                       rowModesModel={rowModesModel}
+                      slots={{
+                        toolbar: GridToolbar,
+                      }}
                     />
                   </Paper>
                   <h2>Add a Contact</h2>

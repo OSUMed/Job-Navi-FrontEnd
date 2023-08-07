@@ -42,6 +42,9 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Sidebar from "./Sidebar";
 import Title from "./Title";
 
+// Reusable Component Imports:
+import CustomEditComponent from "./Common/CustomEditComponent"; // Update with the correct path
+
 interface PropTypes {
   cookie: {
     session: string;
@@ -82,32 +85,32 @@ export default function Applications() {
     {}
   );
 
-  const CustomEditComponent: GridColDef["renderCell"] = (
-    params: GridRenderEditCellParams
-  ) => {
-    const { id, formattedValue, field } = params;
-    console.log("The CustomEditComponent are: ", params);
-    const apiRef = useGridApiContext();
-    return (
-      <TextField
-        multiline
-        variant={"standard"}
-        fullWidth
-        InputProps={{ disableUnderline: true }}
-        maxRows={4}
-        disabled={false}
-        sx={{
-          padding: 1,
-          color: "primary.main",
-        }}
-        onChange={(e) => {
-          apiRef.current.setEditCellValue({ id, field, value: e.target.value });
-          params.value = e.target.value;
-        }}
-        defaultValue={params.formattedValue}
-      />
-    );
-  };
+  // const CustomEditComponent: GridColDef["renderCell"] = (
+  //   params: GridRenderEditCellParams
+  // ) => {
+  //   const { id, formattedValue, field } = params;
+  //   console.log("The CustomEditComponent are: ", params);
+  //   const apiRef = useGridApiContext();
+  //   return (
+  //     <TextField
+  //       multiline
+  //       variant={"standard"}
+  //       fullWidth
+  //       InputProps={{ disableUnderline: true }}
+  //       maxRows={4}
+  //       disabled={false}
+  //       sx={{
+  //         padding: 1,
+  //         color: "primary.main",
+  //       }}
+  //       onChange={(e) => {
+  //         apiRef.current.setEditCellValue({ id, field, value: e.target.value });
+  //         params.value = e.target.value;
+  //       }}
+  //       defaultValue={params.formattedValue}
+  //     />
+  //   );
+  // };
   // This creates the options/details for headers & their associated column:
   // eg: field: jobTitle-- in the header jobTitle I want width of each cell to be 200, I want it to be editable and sortable
   // eg: field: location-- in the header jobTlocationitle I want width of each cell to be 200, but editable is false-- don't want to edit it

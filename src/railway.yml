@@ -1,0 +1,12 @@
+# railway.yml
+
+version: 2
+commands:
+  build:
+    - npm install # Change this if you're using a different package manager
+    - npm run build # Change this to your build command
+
+services:
+  main:
+    # Other configuration options for your service
+    build_command: ./build # Change this to your build directory in the root directory

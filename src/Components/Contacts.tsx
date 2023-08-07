@@ -96,7 +96,7 @@ export default function Contacts({ cookie }: PropTypes) {
   const CustomEditComponent: GridColDef["renderCell"] = (
     params: GridRenderEditCellParams
   ) => {
-    const { id, value, field } = params;
+    const { id, formattedValue, field } = params;
     const apiRef = useGridApiContext();
     return (
       <TextField
@@ -114,7 +114,7 @@ export default function Contacts({ cookie }: PropTypes) {
           apiRef.current.setEditCellValue({ id, field, value: e.target.value });
           params.value = e.target.value;
         }}
-        defaultValue={params.row.relationship}
+        defaultValue={params.formattedValue}
       />
     );
   };

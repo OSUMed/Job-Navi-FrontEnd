@@ -85,7 +85,8 @@ export default function Applications() {
   const CustomEditComponent: GridColDef["renderCell"] = (
     params: GridRenderEditCellParams
   ) => {
-    const { id, value, field } = params;
+    const { id, formattedValue, field } = params;
+    console.log("The CustomEditComponent are: ", params);
     const apiRef = useGridApiContext();
     return (
       <TextField
@@ -103,7 +104,7 @@ export default function Applications() {
           apiRef.current.setEditCellValue({ id, field, value: e.target.value });
           params.value = e.target.value;
         }}
-        defaultValue={params.row.relationship}
+        defaultValue={params.formattedValue}
       />
     );
   };
@@ -129,32 +130,11 @@ export default function Applications() {
             padding: 1,
             color: "primary.main",
           }}
-          defaultValue={params.row.notes}
-          value={params.row.notes}
+          defaultValue={params.row.jobTitle}
+          value={params.row.jobTitle}
         />
       ),
       renderEditCell: CustomEditComponent,
-      // This will render the cell how you want it. Instead of a regular cell, I want to create a textfield so I don't have to scroll
-      // right when the message is too long(textfield wraps text around)
-      // renderCell: (params) => (
-      //   <CustomDisabledTextField
-      //     multiline
-      //     variant={"standard"}
-      //     fullWidth
-      //     InputProps={{ disableUnderline: true }}
-      //     maxRows={4}
-      //     disabled={true}
-      //     // Delete if not needed later:
-      //     // InputLabelProps={{
-      //     //   readOnly: true,
-      //     // }}
-      //     sx={{
-      //       padding: 1,
-      //     }}
-      //     defaultValue={params.row.jobTitle}
-      //     value={params.row.jobTitle}
-      //   />
-      // ),
     },
     {
       field: "company",
@@ -186,38 +166,25 @@ export default function Applications() {
       editable: true,
       sortable: true,
       renderCell: (params) => (
-        <CustomDisabledTextField
-          multiline
-          variant={"standard"}
-          fullWidth
-          InputProps={{ disableUnderline: true }}
-          maxRows={4}
-          disabled={true}
-          sx={{
-            padding: 1,
-            color: "primary.main",
-          }}
-          defaultValue={params.row.notes}
-          value={params.row.notes}
-        />
+        console.log("The params are: ", params),
+        (
+          <CustomDisabledTextField
+            multiline
+            variant={"standard"}
+            fullWidth
+            InputProps={{ disableUnderline: true }}
+            maxRows={4}
+            disabled={true}
+            sx={{
+              padding: 1,
+              color: "primary.main",
+            }}
+            defaultValue={params.row.location}
+            value={params.row.location}
+          />
+        )
       ),
       renderEditCell: CustomEditComponent,
-      // renderCell: (params) => (
-      //   <CustomDisabledTextField
-      //     multiline
-      //     variant={"standard"}
-      //     fullWidth
-      //     InputProps={{ disableUnderline: true }}
-      //     maxRows={4}
-      //     disabled={true}
-      //     sx={{
-      //       padding: 1,
-      //       color: "primary.main",
-      //     }}
-      //     defaultValue={params.row.location}
-      //     value={params.row.location}
-      //   />
-      // ),
     },
     // {
     //   field: "notes",
@@ -339,6 +306,7 @@ export default function Applications() {
         );
       },
       renderEditCell: (params) => {
+        console.log("Edit Cell Params:", params); // Add this line
         // const isInEditMode =
         //   rowModesModel[params.id]?.mode === GridRowModes.Edit;
         // console.log("what is isInEditMode: ", isInEditMode);

@@ -43,6 +43,8 @@ import Title from "./Title";
 
 // Reusable Component Imports:
 import CustomEditComponent from "./Common/CustomEditComponent";
+import Form from "./Common/Form";
+
 // Update with the correct path
 
 // import Axios from "axios";
@@ -422,6 +424,52 @@ export default function Contacts({ cookie }: PropTypes) {
     });
   };
 
+  const fields = [
+    {
+      name: "companyName",
+      type: "text",
+      required: true,
+      placeholder: "Enter company name..",
+    },
+    {
+      name: "fullName",
+      type: "date",
+      required: true,
+      placeholder: "Enter full name..",
+    },
+    { name: "title", type: "text", placeholder: "Enter title.." },
+    {
+      name: "email",
+      type: "text",
+      required: true,
+      placeholder: "Enter email..",
+    },
+    {
+      name: "phone",
+      type: "text",
+      required: true,
+      placeholder: "Enter phone..",
+    },
+    {
+      name: "relationship",
+      type: "text",
+      required: true,
+      placeholder: "Enter relationship..",
+    },
+    {
+      name: "notes",
+      type: "text",
+      required: true,
+      placeholder: "Enter notes..",
+    },
+    {
+      name: "followUpDate",
+      type: "date",
+      required: true,
+      placeholder: "Enter follow-up date..",
+    },
+  ];
+
   return (
     <Box sx={{ display: "flex" }}>
       <Sidebar />
@@ -462,91 +510,12 @@ export default function Contacts({ cookie }: PropTypes) {
                     />
                   </Paper>
                   <h2>Add a Contact</h2>
-                  <form onSubmit={handleAddContactFormSubmit}>
-                    <TextField
-                      type="text"
-                      name="companyName"
-                      required
-                      placeholder="Enter company name.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="date"
-                      name="fullName"
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                      // value={addJob.job_location}
-                      required
-                      placeholder="Enter full name.."
-                      onChange={handleChangeAddContact}
-                    ></TextField>
-                    <TextField
-                      type="text"
-                      name="title"
-                      // value={addJob.date_posted}
-                      placeholder="Enter title.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <br />
-                    <TextField
-                      type="text"
-                      name="email"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter email.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="text"
-                      name="phone"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter phone.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="text"
-                      name="relationship"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter relationship.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <br />
-                    <TextField
-                      type="text"
-                      name="notes"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter notes.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="date"
-                      name="followUpDate"
-                      // value={addJob.salary_est}
-                      required
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <br />
-                    <Button type="submit" variant="contained" color="primary">
-                      Add Contact
-                    </Button>
-                  </form>
+                  <Form
+                    formName={"Add Contact"}
+                    fields={fields}
+                    onSubmit={handleAddContactFormSubmit}
+                    onChange={handleChangeAddContact}
+                  />
                 </TableContainer>
               </React.Fragment>
             </Paper>

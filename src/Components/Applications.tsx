@@ -44,7 +44,7 @@ import Title from "./Title";
 
 // Reusable Component Imports:
 import CustomEditComponent from "./Common/CustomEditComponent"; // Update with the correct path
-
+import Form from "./Common/Form";
 interface PropTypes {
   cookie: {
     session: string;
@@ -73,11 +73,6 @@ export default function Applications() {
     notes: "",
     company: "",
     dateApplied: "",
-  });
-  // const [pageSize, setPageSize] = React.useState<number>(20);
-  const [paginationModel, setPaginationModel] = React.useState({
-    pageSize: 20,
-    page: 0,
   });
   const [rowId, setRowId] = React.useState<number | null>();
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -488,7 +483,58 @@ export default function Applications() {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
   };
-
+  const fields = [
+    {
+      name: "jobTitle",
+      type: "text",
+      required: true,
+      placeholder: "Enter a job name..",
+    },
+    {
+      name: "dateCreated",
+      type: "date",
+      required: true,
+      placeholder: "Enter location..",
+    },
+    { name: "priority", type: "text", placeholder: "Enter priority.." },
+    {
+      name: "status",
+      type: "text",
+      required: true,
+      placeholder: "Enter status..",
+    },
+    {
+      name: "salary",
+      type: "text",
+      required: true,
+      placeholder: "Enter salary..",
+    },
+    {
+      name: "location",
+      type: "text",
+      required: true,
+      placeholder: "Enter location..",
+    },
+    {
+      name: "notes",
+      type: "text",
+      required: true,
+      placeholder: "Enter notes..",
+    },
+    {
+      name: "company",
+      type: "text",
+      required: true,
+      placeholder: "Enter a company name..",
+    },
+    {
+      name: "dateApplied",
+      type: "date",
+      required: true,
+      placeholder: "Enter a date applied..",
+    },
+    // Add more fields here if needed
+  ];
   return (
     <Box sx={{ display: "flex" }}>
       <Sidebar />
@@ -517,8 +563,6 @@ export default function Applications() {
                   rows={allJobs}
                   getRowHeight={() => "auto"}
                   getRowId={(row) => row.jobId}
-                  paginationModel={paginationModel}
-                  onPaginationModelChange={setPaginationModel}
                   autoPageSize={true}
                   editMode="row"
                   processRowUpdate={processRowUpdate}
@@ -530,102 +574,12 @@ export default function Applications() {
                 />
               </Paper>
               <h2>Add a Job</h2>
-              <form onSubmit={handleAddJobFormSubmit}>
-                <TextField
-                  type="text"
-                  name="jobTitle"
-                  required
-                  placeholder="Enter a job name.."
-                  onChange={handleChangeAddJob}
-                  variant="outlined"
-                  style={{ width: "200px", margin: "5px" }}
-                ></TextField>
-                <TextField
-                  type="date"
-                  name="dateCreated"
-                  variant="outlined"
-                  style={{ width: "200px", margin: "5px" }}
-                  // value={addJob.job_location}
-                  required
-                  placeholder="Enter location.."
-                  onChange={handleChangeAddJob}
-                ></TextField>
-                <TextField
-                  type="text"
-                  name="priority"
-                  // value={addJob.date_posted}
-                  placeholder="Enter priority.."
-                  onChange={handleChangeAddJob}
-                  variant="outlined"
-                  style={{ width: "200px", margin: "5px" }}
-                ></TextField>
-                <br />
-                <TextField
-                  type="text"
-                  name="status"
-                  // value={addJob.salary_est}
-                  required
-                  placeholder="Enter status.."
-                  onChange={handleChangeAddJob}
-                  variant="outlined"
-                  style={{ width: "200px", margin: "5px" }}
-                ></TextField>
-                <TextField
-                  type="text"
-                  name="salary"
-                  // value={addJob.salary_est}
-                  required
-                  placeholder="Enter salary.."
-                  onChange={handleChangeAddJob}
-                  variant="outlined"
-                  style={{ width: "200px", margin: "5px" }}
-                ></TextField>
-                <TextField
-                  type="text"
-                  name="location"
-                  // value={addJob.salary_est}
-                  required
-                  placeholder="Enter location.."
-                  onChange={handleChangeAddJob}
-                  variant="outlined"
-                  style={{ width: "200px", margin: "5px" }}
-                ></TextField>
-                <br />
-                <TextField
-                  type="text"
-                  name="notes"
-                  // value={addJob.salary_est}
-                  required
-                  placeholder="Enter notes.."
-                  onChange={handleChangeAddJob}
-                  variant="outlined"
-                  style={{ width: "200px", margin: "5px" }}
-                ></TextField>
-                <TextField
-                  type="text"
-                  name="company"
-                  // value={addJob.salary_est}
-                  required
-                  placeholder="Enter a company name.."
-                  onChange={handleChangeAddJob}
-                  variant="outlined"
-                  style={{ width: "200px", margin: "5px" }}
-                ></TextField>
-                <TextField
-                  type="date"
-                  name="dateApplied"
-                  // value={addJob.salary_est}
-                  required
-                  placeholder="Enter a date applied.."
-                  onChange={handleChangeAddJob}
-                  variant="outlined"
-                  style={{ width: "200px", margin: "5px" }}
-                ></TextField>
-                <br />
-                <Button type="submit" variant="contained" color="primary">
-                  Add Job
-                </Button>
-              </form>
+              <Form
+                formName={"Add Job"}
+                fields={fields}
+                onSubmit={handleAddJobFormSubmit}
+                onChange={handleChangeAddJob}
+              />
             </Paper>
           </Grid>
         </Container>

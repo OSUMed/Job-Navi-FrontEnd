@@ -513,7 +513,7 @@ export default function Contacts({ cookie }: PropTypes) {
               }}
             >
               <React.Fragment>
-                <h2>Contacts TABLE</h2>
+                <h2>Contacts</h2>
                 <TableContainer component={Paper}>
                   <Paper sx={dataGridStyles}>
                     {renderConfirmDialog()}

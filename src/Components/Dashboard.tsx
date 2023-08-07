@@ -8,8 +8,6 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { mainListItems } from "./listItems";
-import Contacts from "./Contacts";
-import Applications from "./Applications";
 import Sidebar from "./Sidebar";
 
 const drawerWidth: number = 240;

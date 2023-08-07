@@ -20,7 +20,7 @@ interface AppBarProps extends MuiAppBarProps {
 
 export default function Dashboard() {
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", backgroundColor: "#F5F5F5" }}>
       <Sidebar />
       <Box
         component="main"

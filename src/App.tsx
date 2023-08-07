@@ -2,10 +2,10 @@ import React from "react";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import Dashboard from "./Components/Dashboard";
-import Contacts from "./Components/Contacts";
-import Applications from "./Components/Applications";
-import Notes from "./Components/Notes";
+import Dashboard from "./components/Dashboard";
+import Contacts from "./components/Contacts";
+import Applications from "./components/Applications";
+import Notes from "./components/Notes";
 
 const App: React.FC = () => {
   return (

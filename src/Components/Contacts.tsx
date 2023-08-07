@@ -1,24 +1,27 @@
 import * as React from "react";
-import Link from "@mui/material/Link";
-import Table from "@mui/material/Table";
-import TableContainer from "@mui/material/TableContainer";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import CancelIcon from "@mui/icons-material/Close";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-
-import Box from "@mui/material/Box";
-import { Autocomplete, Button, TextField, SxProps } from "@mui/material";
+import {
+  Link,
+  Table,
+  TableContainer,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  Dialog,
+  Box,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Container,
+  Grid,
+  Autocomplete,
+  Button,
+  TextField,
+  SxProps,
+} from "@mui/material";
+import { Close as CancelIcon } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
-import Title from "./Title";
 import {
   DataGrid,
   GridColDef,
@@ -30,13 +33,20 @@ import {
   GridRenderEditCellParams,
   GridRenderCellParams,
   useGridApiContext,
+  GridToolbar,
   GridActionsCellItem,
 } from "@mui/x-data-grid";
-import moment from "moment";
 import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
-import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
 import Sidebar from "./Sidebar";
+import Title from "./Title";
+
+// Reusable Component Imports:
+import CustomEditComponent from "./Common/CustomEditComponent";
+import Form from "./Common/Form";
+
+// Update with the correct path
+
 // import Axios from "axios";
 // const baseURL = "http://localhost:3003";
 // Interface for Jobs:
@@ -85,35 +95,6 @@ export default function Contacts({ cookie }: PropTypes) {
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
-  // This creates the options/details for headers & their associated column:
-  // eg: field: jobTitle-- in the header jobTitle I want width of each cell to be 200, I want it to be editable and sortable
-  // eg: field: location-- in the header jobTlocationitle I want width of each cell to be 200, but editable is false-- don't want to edit it
-
-  const CustomEditComponent: GridColDef["renderCell"] = (
-    params: GridRenderEditCellParams
-  ) => {
-    const { id, value, field } = params;
-    const apiRef = useGridApiContext();
-    return (
-      <TextField
-        multiline
-        variant={"standard"}
-        fullWidth
-        InputProps={{ disableUnderline: true }}
-        maxRows={4}
-        disabled={false}
-        sx={{
-          padding: 1,
-          color: "primary.main",
-        }}
-        onChange={(e) => {
-          apiRef.current.setEditCellValue({ id, field, value: e.target.value });
-          params.value = e.target.value;
-        }}
-        defaultValue={params.row.relationship}
-      />
-    );
-  };
 
   const columns: GridColDef[] = [
     {
@@ -132,41 +113,32 @@ export default function Contacts({ cookie }: PropTypes) {
       editable: true,
       sortable: true,
     },
-    {
-      field: "title",
-      headerName: "Title",
-      width: 150,
-      editable: true,
-      sortable: true,
-    },
+    // {
+    //   field: "title",
+    //   headerName: "Title",
+    //   width: 150,
+    //   editable: true,
+    //   sortable: true,
+    // },
     {
       field: "email",
       headerName: "Email",
       // hide: true,
-      width: 120,
+      width: 190,
       editable: true,
       sortable: true,
     },
-    {
-      field: "phone",
-      headerName: "Phone",
-      width: 130,
-      editable: true,
-      sortable: true,
-    },
-    {
-      field: "relationship",
-      headerName: "Relationship",
-      width: 120,
-      editable: true,
-      sortable: true,
-      renderEditCell: CustomEditComponent,
-    },
-
+    // {
+    //   field: "phone",
+    //   headerName: "Phone",
+    //   width: 130,
+    //   editable: true,
+    //   sortable: true,
+    // },
     {
       field: "notes",
       headerName: "Notes",
-      width: 350,
+      width: 320,
       // hide: true,
       editable: true,
       sortable: true,
@@ -190,7 +162,7 @@ export default function Contacts({ cookie }: PropTypes) {
     },
     {
       field: "followUpDate",
-      headerName: "Follow Up Date",
+      headerName: "Follow Up",
       width: 100,
       sortable: true,
       // Date Styling addon- Delete if not needed later
@@ -438,41 +410,7 @@ export default function Contacts({ cookie }: PropTypes) {
     //   console.log("3nd localhost res is: ", response.data);
     // });
   };
-  const handleUpdate = (contactId: number, row: any, params: any) => {
-    // const getDeleteItem = allContacts.filter(
-    //   (row) => row.contactId === contactId
-    // );
-    // const updatedContacts = allContacts.filter(
-    //   (row) => row.contactId !== contactId
-    // );
-    console.log("what is row? ", row);
-    console.log("what is params? ", params);
-    // setAllContacts(
-    //   rows.map((row) => (row.id === newRow.id ? updatedRow : row))
-    // );
-    // console.log("updated contacts are: ", contactId, updatedContacts);
-    // setAllContacts(updatedContacts);
-    // const delete_record = { contactId: contactId };
-    // Axios.delete(`${baseURL}/contact/${jobId}`, {
-    //   headers: {
-    //     Authorization: `Bearer ${cookie.session}`,
-    //   },
-    // }).then((response) => {
-    //   Axios.get(`${baseURL}/contacts`, {
-    //     headers: {
-    //       Authorization: `Bearer ${cookie.session}`,
-    //     },
-    //   }).then((response) => {
-    //     setAllContacts(response.data);
-    //   });
-    //   console.log("3nd localhost res is: ", response.data);
-    // });
-  };
-  // const setRowEdit = () => {
-  //   const myNum = 95;
-  //   return { myNum: { mode: GridRowModes.Edit } };
-  //   // return { 96: { mode: GridRowModes.Edit } };
-  // };
+
   const setRowEdit = (id: GridRowId) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
@@ -486,12 +424,52 @@ export default function Contacts({ cookie }: PropTypes) {
     });
   };
 
-  // Below we have <DataGrid> like a component and we pass options into it, like how we pass parent props to childs. Though
-  // here the child component(datagrid), is an API in MUI.
-  // columns: what the headers and associated column configuations are
-  // rows: the actual data for each row(it does the map function)
-  // Update stuff is a little weird-- requires making a promise and resolving it
-  // After that, it is just the regular Form Submit stuff
+  const fields = [
+    {
+      name: "companyName",
+      type: "text",
+      required: true,
+      placeholder: "Enter company name..",
+    },
+    {
+      name: "fullName",
+      type: "date",
+      required: true,
+      placeholder: "Enter full name..",
+    },
+    { name: "title", type: "text", placeholder: "Enter title.." },
+    {
+      name: "email",
+      type: "text",
+      required: true,
+      placeholder: "Enter email..",
+    },
+    {
+      name: "phone",
+      type: "text",
+      required: true,
+      placeholder: "Enter phone..",
+    },
+    {
+      name: "relationship",
+      type: "text",
+      required: true,
+      placeholder: "Enter relationship..",
+    },
+    {
+      name: "notes",
+      type: "text",
+      required: true,
+      placeholder: "Enter notes..",
+    },
+    {
+      name: "followUpDate",
+      type: "date",
+      required: true,
+      placeholder: "Enter follow-up date..",
+    },
+  ];
+
   return (
     <Box sx={{ display: "flex" }}>
       <Sidebar />
@@ -513,7 +491,7 @@ export default function Contacts({ cookie }: PropTypes) {
               }}
             >
               <React.Fragment>
-                <h2>Contacts TABLE</h2>
+                <h2>Contacts</h2>
                 <TableContainer component={Paper}>
                   <Paper sx={dataGridStyles}>
                     {renderConfirmDialog()}
@@ -522,105 +500,22 @@ export default function Contacts({ cookie }: PropTypes) {
                       rows={allContacts}
                       getRowHeight={() => "auto"}
                       getRowId={(row) => row.contactId}
-                      // onPageSizeChange={(pageSizeChoice: number) =>
-                      //   setPageSize(pageSizeChoice)
-                      // }
-                      // pageSize={pageSize}
-                      // rowsPerPageOptions={[20, 40, 60]}
-                      // autoPageSize={true}
-                      // experimentalFeatures={{ newEditingApi: true }}
                       editMode="row"
                       processRowUpdate={processRowUpdate}
                       onProcessRowUpdateError={handleProcessRowUpdateError}
                       rowModesModel={rowModesModel}
+                      slots={{
+                        toolbar: GridToolbar,
+                      }}
                     />
                   </Paper>
                   <h2>Add a Contact</h2>
-                  <form onSubmit={handleAddContactFormSubmit}>
-                    <TextField
-                      type="text"
-                      name="companyName"
-                      required
-                      placeholder="Enter company name.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="date"
-                      name="fullName"
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                      // value={addJob.job_location}
-                      required
-                      placeholder="Enter full name.."
-                      onChange={handleChangeAddContact}
-                    ></TextField>
-                    <TextField
-                      type="text"
-                      name="title"
-                      // value={addJob.date_posted}
-                      placeholder="Enter title.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <br />
-                    <TextField
-                      type="text"
-                      name="email"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter email.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="text"
-                      name="phone"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter phone.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="text"
-                      name="relationship"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter relationship.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <br />
-                    <TextField
-                      type="text"
-                      name="notes"
-                      // value={addJob.salary_est}
-                      required
-                      placeholder="Enter notes.."
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <TextField
-                      type="date"
-                      name="followUpDate"
-                      // value={addJob.salary_est}
-                      required
-                      onChange={handleChangeAddContact}
-                      variant="outlined"
-                      style={{ width: "200px", margin: "5px" }}
-                    ></TextField>
-                    <br />
-                    <Button type="submit" variant="contained" color="primary">
-                      Add Contact
-                    </Button>
-                  </form>
+                  <Form
+                    formName={"Add Contact"}
+                    fields={fields}
+                    onSubmit={handleAddContactFormSubmit}
+                    onChange={handleChangeAddContact}
+                  />
                 </TableContainer>
               </React.Fragment>
             </Paper>

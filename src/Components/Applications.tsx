@@ -575,15 +575,9 @@ export default function Applications() {
                   rows={allJobs}
                   getRowHeight={() => "auto"}
                   getRowId={(row) => row.jobId}
-                  // onPageSizeChange={(pageSizeChoice: number) =>
-                  //   setPageSize(pageSizeChoice)
-                  // }
-                  // pageSize={pageSize}
-                  // rowsPerPageOptions={[20, 40, 60]}
                   paginationModel={paginationModel}
                   onPaginationModelChange={setPaginationModel}
                   autoPageSize={true}
-                  // experimentalFeatures={{ newEditingApi: true }}
                   editMode="row"
                   processRowUpdate={processRowUpdate}
                   onProcessRowUpdateError={handleProcessRowUpdateError}

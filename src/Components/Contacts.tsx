@@ -477,13 +477,6 @@ export default function Contacts({ cookie }: PropTypes) {
                       rows={allContacts}
                       getRowHeight={() => "auto"}
                       getRowId={(row) => row.contactId}
-                      // onPageSizeChange={(pageSizeChoice: number) =>
-                      //   setPageSize(pageSizeChoice)
-                      // }
-                      // pageSize={pageSize}
-                      // rowsPerPageOptions={[20, 40, 60]}
-                      // autoPageSize={true}
-                      // experimentalFeatures={{ newEditingApi: true }}
                       editMode="row"
                       processRowUpdate={processRowUpdate}
                       onProcessRowUpdateError={handleProcessRowUpdateError}

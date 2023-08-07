@@ -28,9 +28,9 @@ import {
   GridRowModes,
   GridRowModesModel,
   GridRenderEditCellParams,
-  GridRenderCellParams,
   useGridApiContext,
   GridActionsCellItem,
+  GridToolbar,
 } from "@mui/x-data-grid";
 import moment from "moment";
 import { styled } from "@mui/material/styles";
@@ -67,7 +67,11 @@ export default function Applications() {
     company: "",
     dateApplied: "",
   });
-  const [pageSize, setPageSize] = React.useState<number>(20);
+  // const [pageSize, setPageSize] = React.useState<number>(20);
+  const [paginationModel, setPaginationModel] = React.useState({
+    pageSize: 20,
+    page: 0,
+  });
   const [rowId, setRowId] = React.useState<number | null>();
   const [loading, setLoading] = React.useState<boolean>(true);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
@@ -125,6 +129,7 @@ export default function Applications() {
           value={params.row.notes}
         />
       ),
+      renderEditCell: CustomEditComponent,
       // This will render the cell how you want it. Instead of a regular cell, I want to create a textfield so I don't have to scroll
       // right when the message is too long(textfield wraps text around)
       // renderCell: (params) => (
@@ -154,38 +159,22 @@ export default function Applications() {
       editable: true,
       sortable: true,
     },
-    {
-      field: "dateCreated",
-      headerName: "Date Created",
-      // hide: true,
-      width: 120,
-      editable: true,
-      sortable: true,
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 130,
-      type: "singleSelect",
-      // I want this header's column to have options we can pick from:
-      valueOptions: [
-        "Bookmarked",
-        "Applying",
-        "Applied",
-        "Interviewing",
-        "Negotiating",
-        "Accepted",
-      ],
-      editable: true,
-      sortable: true,
-    },
-    {
-      field: "salary",
-      headerName: "Salary(USD)",
-      width: 120,
-      editable: true,
-      sortable: true,
-    },
+    // {
+    //   field: "dateCreated",
+    //   headerName: "Date Created",
+    //   hideable: true,
+    //   width: 120,
+    //   sortable: true,
+    // },
+
+    // {
+    //   field: "salary",
+    //   headerName: "Salary(USD)",
+    //   width: 120,
+    //   hideable: true,
+    //   editable: true,
+    //   sortable: true,
+    // },
     {
       field: "location",
       headerName: "Job Location",
@@ -225,46 +214,47 @@ export default function Applications() {
       //   />
       // ),
     },
-    {
-      field: "notes",
-      headerName: "Notes",
-      width: 350,
-      // hide: true,
-      editable: true,
-      sortable: true,
-      renderCell: (params) => (
-        <CustomDisabledTextField
-          multiline
-          variant={"standard"}
-          fullWidth
-          InputProps={{ disableUnderline: true }}
-          maxRows={4}
-          disabled={true}
-          sx={{
-            padding: 1,
-            color: "primary.main",
-          }}
-          defaultValue={params.row.notes}
-          value={params.row.notes}
-        />
-      ),
-      // renderCell: (params) => (
-      //   <CustomDisabledTextField
-      //     multiline
-      //     variant={"standard"}
-      //     fullWidth
-      //     InputProps={{ disableUnderline: true }}
-      //     maxRows={4}
-      //     disabled={true}
-      //     sx={{
-      //       padding: 1,
-      //       color: "primary.main",
-      //     }}
-      //     defaultValue={params.row.notes}
-      //     value={params.row.notes}
-      //   />
-      // )
-    },
+    // {
+    //   field: "notes",
+    //   headerName: "Notes",
+    //   width: 350,
+    //   // hide: true,
+    //   editable: true,
+    //   sortable: true,
+    //   resizable: true,
+    //   renderCell: (params) => (
+    //     <CustomDisabledTextField
+    //       multiline
+    //       variant={"standard"}
+    //       fullWidth
+    //       InputProps={{ disableUnderline: true }}
+    //       maxRows={4}
+    //       disabled={true}
+    //       sx={{
+    //         padding: 1,
+    //         color: "primary.main",
+    //       }}
+    //       defaultValue={params.row.notes}
+    //       value={params.row.notes}
+    //     />
+    //   ),
+    //   // renderCell: (params) => (
+    //   //   <CustomDisabledTextField
+    //   //     multiline
+    //   //     variant={"standard"}
+    //   //     fullWidth
+    //   //     InputProps={{ disableUnderline: true }}
+    //   //     maxRows={4}
+    //   //     disabled={true}
+    //   //     sx={{
+    //   //       padding: 1,
+    //   //       color: "primary.main",
+    //   //     }}
+    //   //     defaultValue={params.row.notes}
+    //   //     value={params.row.notes}
+    //   //   />
+    //   // )
+    // },
     {
       field: "dateApplied",
       headerName: "Date Applied",
@@ -277,6 +267,23 @@ export default function Applications() {
       field: "priority",
       headerName: "Priority",
       width: 80,
+      editable: true,
+      sortable: true,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 130,
+      type: "singleSelect",
+      // I want this header's column to have options we can pick from:
+      valueOptions: [
+        "Bookmarked",
+        "Applying",
+        "Applied",
+        "Interviewing",
+        "Negotiating",
+        "Accepted",
+      ],
       editable: true,
       sortable: true,
     },
@@ -524,13 +531,6 @@ export default function Applications() {
     return <LinearProgress />;
   }
 
-  // Below we have <DataGrid> like a component and we pass options into it, like how we pass parent props to childs. Though
-  // here the child component(datagrid), is an API in MUI.
-  // columns: what the headers and associated column configuations are
-  // rows: the actual data for each row(it does the map function)
-  // Update stuff is a little weird-- requires making a promise and resolving it
-  // After that, it is just the regular Form Submit stuff
-
   const setRowEdit = (id: GridRowId) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
@@ -577,12 +577,17 @@ export default function Applications() {
                   // }
                   // pageSize={pageSize}
                   // rowsPerPageOptions={[20, 40, 60]}
-                  // autoPageSize={true}
+                  paginationModel={paginationModel}
+                  onPaginationModelChange={setPaginationModel}
+                  autoPageSize={true}
                   // experimentalFeatures={{ newEditingApi: true }}
                   editMode="row"
                   processRowUpdate={processRowUpdate}
                   onProcessRowUpdateError={handleProcessRowUpdateError}
                   rowModesModel={rowModesModel}
+                  slots={{
+                    toolbar: GridToolbar,
+                  }}
                 />
               </Paper>
               <h2>Add a Job</h2>

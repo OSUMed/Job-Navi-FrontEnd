@@ -545,7 +545,7 @@ export default function Applications() {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", backgroundColor: "#F5F5F5" }}>
       <Sidebar />
       <Box
         component="main"

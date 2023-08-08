@@ -175,7 +175,7 @@ export default function Contacts({ cookie }: PropTypes) {
           return (
             <>
               <Button
-                onClick={() => setRowSave(params.row.rowId)}
+                onClick={() => setRowSave(params.row.rowId, params.row)}
                 variant="contained"
               >
                 Save
@@ -217,7 +217,7 @@ export default function Contacts({ cookie }: PropTypes) {
         return (
           <>
             <Button
-              onClick={() => setRowSave(params.row.contactId)}
+              onClick={() => setRowSave(params.row.contactId, params.row)}
               variant="contained"
             >
               Save
@@ -249,7 +249,7 @@ export default function Contacts({ cookie }: PropTypes) {
     Axios.get("http://localhost:8080/contacts")
       .then((response) => {
         const transformedContacts = response.data.map((contact: Contact) => ({
-          rowId: contact.rowId, // Use the correct property name
+          rowId: contact.rowId,
           companyName: contact.companyName,
           fullName: contact.fullName,
           title: contact.title,
@@ -268,7 +268,7 @@ export default function Contacts({ cookie }: PropTypes) {
       .finally(() => {
         setLoading(false);
       });
-  }, [loading]);
+  }, []);
 
   /*------------------------------------Create/Add Row Logic------------------------------------*/
 
@@ -389,38 +389,118 @@ export default function Contacts({ cookie }: PropTypes) {
   };
 
   /*------------------------------------Delete Row Logic------------------------------------*/
-
-  const handleDelete = (contactId: number) => {
-    // const getDeleteItem = allContacts.filter(
-    //   (row) => row.contactId === contactId
-    // );
-    const updatedContacts = allContacts.filter(
-      (row) => row.contactId !== contactId
-    );
-    console.log("updated contacts are: ", contactId, updatedContacts);
-    setAllContacts(updatedContacts);
-    // const delete_record = { contactId: contactId };
-    // Axios.delete(`${baseURL}/contact/${jobId}`, {
-    //   headers: {
-    //     Authorization: `Bearer ${cookie.session}`,
-    //   },
-    // }).then((response) => {
-    //   Axios.get(`${baseURL}/contacts`, {
-    //     headers: {
-    //       Authorization: `Bearer ${cookie.session}`,
-    //     },
-    //   }).then((response) => {
-    //     setAllContacts(response.data);
-    //   });
-    //   console.log("3nd localhost res is: ", response.data);
-    // });
+  const fetchContacts = async () => {
+    try {
+      const response = await Axios.get("http://localhost:8080/contacts");
+      const transformedContacts = response.data.map((contact: Contact) => ({
+        rowId: contact.rowId,
+        companyName: contact.companyName,
+        fullName: contact.fullName,
+        title: contact.title,
+        email: contact.email,
+        phone: contact.phone,
+        relationship: contact.relationship,
+        notes: contact.notes,
+        followUpDate: contact.followUpDate,
+      }));
+      setAllContacts(transformedContacts);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
   };
+
+  const handleDelete = async (contactId: string) => {
+    try {
+      await Axios.post(`http://localhost:8080/contacts/${contactId}/delete`);
+      await fetchContacts();
+      alert("Contact deleted!");
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+    }
+  };
+  const handleUpdate = async (contactId: string) => {
+    try {
+      await Axios.post(`http://localhost:8080/contacts/`);
+      await fetchContacts();
+      alert("Contact deleted!");
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+    }
+  };
+
+  // const handleDelete2 = (contactId: number) => {
+  //   // const getDeleteItem = allContacts.filter(
+  //   //   (row) => row.contactId === contactId
+  //   // );
+  //   const updatedContacts = allContacts.filter(
+  //     (row) => row.contactId !== contactId
+  //   );
+  //   console.log("updated contacts are: ", contactId, updatedContacts);
+  //   Axios.get(`http://localhost:8080//contacts/${contactId}/delete`)
+  //   .then((response) => {
+  //     Axios.get("http://localhost:8080/contacts")
+  //     .then((response) => {
+  //       const transformedContacts = response.data.map((contact: Contact) => ({
+  //         rowId: contact.rowId,
+  //         companyName: contact.companyName,
+  //         fullName: contact.fullName,
+  //         title: contact.title,
+  //         email: contact.email,
+  //         phone: contact.phone,
+  //         relationship: contact.relationship,
+  //         notes: contact.notes,
+  //         followUpDate: contact.followUpDate,
+  //       }));
+
+  //       setAllContacts(transformedContacts);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching contacts: ", error);
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  //   }
+
+  //   // const delete_record = { contactId: contactId };
+  //   // Axios.delete(`${baseURL}/contact/${jobId}`, {
+  //   //   headers: {
+  //   //     Authorization: `Bearer ${cookie.session}`,
+  //   //   },
+  //   // }).then((response) => {
+  //   //   Axios.get(`${baseURL}/contacts`, {
+  //   //     headers: {
+  //   //       Authorization: `Bearer ${cookie.session}`,
+  //   //     },
+  //   //   }).then((response) => {
+  //   //     setAllContacts(response.data);
+  //   //   });
+  //   //   console.log("3nd localhost res is: ", response.data);
+  //   // });
+  // };
 
   const setRowEdit = (id: GridRowId) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
-  const setRowSave = (id: GridRowId) => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  const setRowSave = async (id: GridRowId, row) => {
+    try {
+      const updContact: Contact = {
+        rowId: row.rowId,
+        companyName: row.companyName,
+        fullName: row.fullName,
+        title: row.title,
+        email: row.email,
+        phone: row.phone,
+        relationship: row.relationship,
+        notes: row.notes,
+        followUpDate: row.followUpDate,
+      };
+      await Axios.post(`http://localhost:8080/contacts/${id}`, updContact);
+      await fetchContacts();
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+    }
   };
   const setRowCancel = (id: GridRowId) => {
     setRowModesModel({

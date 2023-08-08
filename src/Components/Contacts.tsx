@@ -36,7 +36,8 @@ import Form from "./Form";
 // Update with the correct path
 
 // import Axios from "axios";
-const hostURL = "https://jobtrackerbackend.up.railway.app/";
+const hostURL =
+  "https://cors-anywhere-osu.up.railway.app/https://jobtrackerbackend.up.railway.app/";
 // Interface for Jobs:
 interface Contact {
   rowId: GridRowId;
@@ -242,9 +243,11 @@ export default function Contacts({ cookie }: PropTypes) {
 
   React.useEffect(() => {
     // setLoading(true);
-
-    // Axios.get(`${hostURL}/contacts`)
-    Axios.get("https://jobtrackerbackend.up.railway.app/contacts")
+    const headers = {
+      "Access-Control-Allow-Origin": "*", // Replace with the allowed origin
+    };
+    Axios.get(`${hostURL}/contacts`)
+      // Axios.get("https://jobtrackerbackend.up.railway.app/contacts", { headers })
       .then((response) => {
         const transformedContacts = response.data.map((contact: Contact) => ({
           rowId: contact.rowId,

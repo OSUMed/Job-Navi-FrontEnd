@@ -9,13 +9,11 @@ import {
   DialogActions,
   Container,
   Grid,
-  Autocomplete,
   Button,
   TextField,
   SxProps,
 } from "@mui/material";
 import { Close as CancelIcon } from "@mui/icons-material";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   DataGrid,
   GridColDef,
@@ -30,7 +28,6 @@ import {
 import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
 import Sidebar from "./Sidebar";
-import Title from "./Title";
 
 // Reusable Component Imports:
 import CustomEditComponent from "./CustomEditComponent";
@@ -53,9 +50,9 @@ interface Contact {
   followUpDate?: string | Date;
 }
 
-interface ContactsResponse {
-  contacts: Contact[];
-}
+// interface ContactsResponse {
+//   contacts: Contact[];
+// }
 interface PropTypes {
   cookie: {
     session: string;
@@ -83,10 +80,10 @@ export default function Contacts({ cookie }: PropTypes) {
     notes: "",
     followUpDate: "",
   });
-  const [pageSize, setPageSize] = React.useState<number>(20);
-  const [rowId, setRowId] = React.useState<number | null>();
-  const [editRowId, setEditRowId] = React.useState<number>(95);
-  const [loading, setLoading] = React.useState<boolean>(true);
+  // const [pageSize, setPageSize] = React.useState<number>(20);
+  // const [rowId, setRowId] = React.useState<number | null>();
+  // const [editRowId, setEditRowId] = React.useState<number>(95);
+  // const [loading, setLoading] = React.useState<boolean>(true);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
@@ -239,12 +236,12 @@ export default function Contacts({ cookie }: PropTypes) {
     height: 500,
   };
 
-  function preventDefault(event: React.MouseEvent) {
-    event.preventDefault();
-  }
+  // function preventDefault(event: React.MouseEvent) {
+  //   event.preventDefault();
+  // }
 
   React.useEffect(() => {
-    setLoading(true);
+    // setLoading(true);
 
     Axios.get("http://localhost:8080/contacts")
       .then((response) => {
@@ -266,7 +263,7 @@ export default function Contacts({ cookie }: PropTypes) {
         console.error("Error fetching contacts: ", error);
       })
       .finally(() => {
-        setLoading(false);
+        // setLoading(false);
       });
   }, []);
 
@@ -348,7 +345,7 @@ export default function Contacts({ cookie }: PropTypes) {
     const { newRow, oldRow, resolve } = confirmData;
     // console.log("New row is: ", newRow, newRow.jobId);
     // If user responds yes, send new row to database, else resolve old row back:
-    if (response == "Yes") {
+    if (response === "Yes") {
       // Axios.put(`${baseURL}/jobs/${newRow.jobId}`, newRow, {
       //   headers: {
       //     Authorization: `Bearer ${cookie.session}`,
@@ -360,7 +357,7 @@ export default function Contacts({ cookie }: PropTypes) {
       //   resolve(newRow);
       // });
       resolve(newRow);
-    } else if (response == "No") {
+    } else if (response === "No") {
       resolve(oldRow);
     }
     setConfirmData(null);
@@ -376,7 +373,7 @@ export default function Contacts({ cookie }: PropTypes) {
     console.log("what is row right renderConfirmDialog: ", newRow);
 
     // Case 2: if new input is same as old input, don't show dialog:
-    if (JSON.stringify(newRow) == JSON.stringify(oldRow)) {
+    if (JSON.stringify(newRow) === JSON.stringify(oldRow)) {
       resolve(oldRow);
       setConfirmData(null);
       return;
@@ -424,15 +421,15 @@ export default function Contacts({ cookie }: PropTypes) {
       console.error("Error deleting contact:", error);
     }
   };
-  const handleUpdate = async (contactId: string) => {
-    try {
-      await Axios.post(`http://localhost:8080/contacts/`);
-      await fetchContacts();
-      alert("Contact deleted!");
-    } catch (error) {
-      console.error("Error deleting contact:", error);
-    }
-  };
+  // const handleUpdate = async (contactId: string) => {
+  //   try {
+  //     await Axios.post(`http://localhost:8080/contacts/`);
+  //     await fetchContacts();
+  //     alert("Contact deleted!");
+  //   } catch (error) {
+  //     console.error("Error deleting contact:", error);
+  //   }
+  // };
 
   // const handleDelete2 = (contactId: number) => {
   //   // const getDeleteItem = allContacts.filter(
@@ -488,7 +485,7 @@ export default function Contacts({ cookie }: PropTypes) {
   const setRowEdit = (id: GridRowId) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
-  const setRowSave = async (id: GridRowId, row) => {
+  const setRowSave = async (id: GridRowId, row: GridRowModel) => {
     try {
       const updContact: Contact = {
         rowId: row.rowId,

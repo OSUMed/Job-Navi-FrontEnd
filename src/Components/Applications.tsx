@@ -1,27 +1,17 @@
 import * as React from "react";
 import {
-  Link,
-  Table,
-  TableContainer,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Paper,
   Dialog,
   Box,
   DialogTitle,
-  DialogContent,
   DialogActions,
   Container,
   Grid,
-  Autocomplete,
   Button,
   TextField,
   SxProps,
 } from "@mui/material";
 import { Close as CancelIcon } from "@mui/icons-material";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   DataGrid,
   GridColDef,
@@ -30,9 +20,6 @@ import {
   GridRowsProp,
   GridRowModes,
   GridRowModesModel,
-  GridRenderEditCellParams,
-  GridRenderCellParams,
-  useGridApiContext,
   GridToolbar,
   GridActionsCellItem,
 } from "@mui/x-data-grid";
@@ -40,18 +27,17 @@ import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
 import LinearProgress from "@mui/material/LinearProgress";
 import Sidebar from "./Sidebar";
-import Title from "./Title";
 
 // Reusable Component Imports:
 import CustomEditComponent from "./CustomEditComponent"; // Update with the correct path
 import Form from "./Form";
+// interface PropTypes {
+//   cookie: {
+//     session: string;
+//   };
+// }
 
 const hostURL = "jobtrackerbackend.up.railway.app";
-interface PropTypes {
-  cookie: {
-    session: string;
-  };
-}
 
 // Source: https://stackoverflow.com/questions/70361697/how-to-change-text-color-of-disabled-mui-text-field-mui-v5
 const CustomDisabledTextField = styled(TextField)(() => ({
@@ -76,7 +62,6 @@ export default function Applications() {
     company: "",
     dateApplied: "",
   });
-  const [rowId, setRowId] = React.useState<number | null>();
   const [loading, setLoading] = React.useState<boolean>(true);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
@@ -137,23 +122,20 @@ export default function Applications() {
       editable: true,
       sortable: true,
       renderCell: (params) => (
-        console.log("The params are: ", params),
-        (
-          <CustomDisabledTextField
-            multiline
-            variant={"standard"}
-            fullWidth
-            InputProps={{ disableUnderline: true }}
-            maxRows={4}
-            disabled={true}
-            sx={{
-              padding: 1,
-              color: "primary.main",
-            }}
-            defaultValue={params.row.location}
-            value={params.row.location}
-          />
-        )
+        <CustomDisabledTextField
+          multiline
+          variant={"standard"}
+          fullWidth
+          InputProps={{ disableUnderline: true }}
+          maxRows={4}
+          disabled={true}
+          sx={{
+            padding: 1,
+            color: "primary.main",
+          }}
+          defaultValue={params.row.location}
+          value={params.row.location}
+        />
       ),
       renderEditCell: CustomEditComponent,
     },
@@ -400,7 +382,7 @@ export default function Applications() {
     const { newRow, oldRow, resolve } = confirmData;
     // console.log("New row is: ", newRow, newRow.jobId);
     // If user responds yes, send new row to database, else resolve old row back:
-    if (response == "Yes") {
+    if (response === "Yes") {
       //   Axios.put(`${baseURL}/jobs/${newRow.jobId}`, newRow, {
       //     headers: {
       //       Authorization: `Bearer ${store.session}`,
@@ -411,7 +393,7 @@ export default function Applications() {
       //     console.log("3nd localhost res is: ", response.data);
       //   });
       resolve(newRow);
-    } else if (response == "No") {
+    } else if (response === "No") {
       resolve(oldRow);
     }
     setConfirmData(null);
@@ -427,7 +409,7 @@ export default function Applications() {
     console.log("what is row right renderConfirmDialog: ", newRow);
 
     // Case 2: if new input is same as old input, don't show dialog:
-    if (JSON.stringify(newRow) == JSON.stringify(oldRow)) {
+    if (JSON.stringify(newRow) === JSON.stringify(oldRow)) {
       resolve(oldRow);
       setConfirmData(null);
       return;
@@ -449,7 +431,7 @@ export default function Applications() {
 
   const handleDelete = (jobId: number) => {
     // const getDeleteItem = allJobs.filter((row) => row.jobId === jobId);
-    const delete_record = { jobId: jobId };
+    // const delete_record = { jobId: jobId };
     const updatedApplications = allJobs.filter((row) => row.jobId !== jobId);
     // console.log("updated contacts are: ", contactId, updatedContacts);
     setAllJobs(updatedApplications);

@@ -36,7 +36,7 @@ import Form from "./Form";
 // Update with the correct path
 
 // import Axios from "axios";
-// const baseURL = "http://localhost:3003";
+const hostURL = "jobtrackerbackend.up.railway.app";
 // Interface for Jobs:
 interface Contact {
   rowId: GridRowId;
@@ -243,7 +243,7 @@ export default function Contacts({ cookie }: PropTypes) {
   React.useEffect(() => {
     // setLoading(true);
 
-    Axios.get("http://localhost:8080/contacts")
+    Axios.get(`${hostURL}/contacts`)
       .then((response) => {
         const transformedContacts = response.data.map((contact: Contact) => ({
           rowId: contact.rowId,
@@ -298,7 +298,7 @@ export default function Contacts({ cookie }: PropTypes) {
       followUpDate: addContact.followUpDate,
     };
     try {
-      await Axios.post("http://localhost:8080/contacts", newContact);
+      await Axios.post(`${hostURL}/contacts`, newContact);
       await fetchContacts();
     } catch (error) {
       console.error("Error adding contact:", error);
@@ -394,7 +394,7 @@ export default function Contacts({ cookie }: PropTypes) {
   /*------------------------------------Delete Row Logic------------------------------------*/
   const fetchContacts = async () => {
     try {
-      const response = await Axios.get("http://localhost:8080/contacts");
+      const response = await Axios.get(`${hostURL}/contacts`);
       const transformedContacts = response.data.map((contact: Contact) => ({
         rowId: contact.rowId,
         companyName: contact.companyName,
@@ -414,7 +414,7 @@ export default function Contacts({ cookie }: PropTypes) {
 
   const handleDelete = async (contactId: string) => {
     try {
-      await Axios.post(`http://localhost:8080/contacts/${contactId}/delete`);
+      await Axios.post(`http://${hostURL}/contacts/${contactId}/delete`);
       await fetchContacts();
       alert("Contact deleted!");
     } catch (error) {
@@ -498,7 +498,7 @@ export default function Contacts({ cookie }: PropTypes) {
         notes: row.notes,
         followUpDate: row.followUpDate,
       };
-      await Axios.post(`http://localhost:8080/contacts/${id}`, updContact);
+      await Axios.post(`http://${hostURL}/contacts/${id}`, updContact);
       await fetchContacts();
       setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     } catch (error) {

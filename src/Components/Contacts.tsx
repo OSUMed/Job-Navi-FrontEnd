@@ -284,7 +284,7 @@ export default function Contacts({ cookie }: PropTypes) {
     setAddContact(newContact);
   };
 
-  const handleAddContactFormSubmit = (
+  const handleAddContactFormSubmit = async (
     e: React.SyntheticEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
@@ -300,6 +300,12 @@ export default function Contacts({ cookie }: PropTypes) {
       notes: addContact.notes,
       followUpDate: addContact.followUpDate,
     };
+    try {
+      await Axios.post("http://localhost:8080/contacts", newContact);
+      await fetchContacts();
+    } catch (error) {
+      console.error("Error adding contact:", error);
+    }
     // Axios.post(`${baseURL}/jobs`, newContact, {
     //   headers: {
     //     Authorization: `Bearer ${cookie.session}`,
@@ -316,7 +322,7 @@ export default function Contacts({ cookie }: PropTypes) {
     //   // console.log("2nd localhost res is: ", response.data);
     // });
     // console.log("add job: ", newJob);
-    setAllContacts([...allContacts, newContact]);
+    // setAllContacts([...allContacts, newContact]);
   };
 
   /*------------------------------------Update/Edit Cell Dialog Logic------------------------------------*/

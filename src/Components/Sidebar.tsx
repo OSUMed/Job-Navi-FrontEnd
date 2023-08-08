@@ -11,7 +11,7 @@ const Sidebar = () => {
     setOpen(!open);
   };
 
-  const sidebarWidth = open ? "100%" : "0%";
+  // const sidebarWidth = open ? "100%" : "0%";
 
   return (
     <Box sx={{ display: "flex" }}>

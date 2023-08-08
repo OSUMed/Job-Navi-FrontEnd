@@ -36,7 +36,7 @@ import Form from "./Form";
 // Update with the correct path
 
 // import Axios from "axios";
-const hostURL = "jobtrackerbackend.up.railway.app";
+const hostURL = "https://jobtrackerbackend.up.railway.app/";
 // Interface for Jobs:
 interface Contact {
   rowId: GridRowId;
@@ -243,7 +243,8 @@ export default function Contacts({ cookie }: PropTypes) {
   React.useEffect(() => {
     // setLoading(true);
 
-    Axios.get(`${hostURL}/contacts`)
+    // Axios.get(`${hostURL}/contacts`)
+    Axios.get("https://jobtrackerbackend.up.railway.app/contacts")
       .then((response) => {
         const transformedContacts = response.data.map((contact: Contact) => ({
           rowId: contact.rowId,
@@ -256,7 +257,7 @@ export default function Contacts({ cookie }: PropTypes) {
           notes: contact.notes,
           followUpDate: contact.followUpDate,
         }));
-
+        console.log("response data is: ", response.data);
         setAllContacts(transformedContacts);
       })
       .catch((error) => {
@@ -303,23 +304,6 @@ export default function Contacts({ cookie }: PropTypes) {
     } catch (error) {
       console.error("Error adding contact:", error);
     }
-    // Axios.post(`${baseURL}/jobs`, newContact, {
-    //   headers: {
-    //     Authorization: `Bearer ${cookie.session}`,
-    //   },
-    // }).then((response) => {
-    //   // console.log("3nd localhost res is: ", response.data);
-    // });
-    // Axios.get(`${baseURL}/jobs`, {
-    //   headers: {
-    //     Authorization: `Bearer ${cookie.session}`,
-    //   },
-    // }).then((response) => {
-    //   setAllContacts(response.data);
-    //   // console.log("2nd localhost res is: ", response.data);
-    // });
-    // console.log("add job: ", newJob);
-    // setAllContacts([...allContacts, newContact]);
   };
 
   /*------------------------------------Update/Edit Cell Dialog Logic------------------------------------*/

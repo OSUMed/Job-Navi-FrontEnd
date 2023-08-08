@@ -45,6 +45,8 @@ import Title from "./Title";
 // Reusable Component Imports:
 import CustomEditComponent from "./CustomEditComponent"; // Update with the correct path
 import Form from "./Form";
+
+const hostURL = "jobtrackerbackend.up.railway.app";
 interface PropTypes {
   cookie: {
     session: string;
@@ -305,9 +307,9 @@ export default function Applications() {
     height: 500,
   };
 
-  function preventDefault(event: React.MouseEvent) {
-    event.preventDefault();
-  }
+  // function preventDefault(event: React.MouseEvent) {
+  //   event.preventDefault();
+  // }
 
   React.useEffect(() => {
     setLoading(true);

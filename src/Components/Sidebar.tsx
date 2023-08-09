@@ -8,7 +8,6 @@ import {
   Box,
   useMediaQuery,
   createTheme,
-  useTheme,
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { mainListItems, shortListItems, mediumListItems } from "./listItems";

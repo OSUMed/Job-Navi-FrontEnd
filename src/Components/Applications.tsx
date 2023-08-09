@@ -563,7 +563,7 @@ export default function Applications() {
 
   const handleDelete = async (applicationId: string) => {
     try {
-      await Axios.post(`${hostURL}/api/applications/${applicationId}/delete`);
+      await Axios.post(`${hostURL}/applications/${applicationId}/delete`);
       await fetchApplications();
       alert("Application deleted!");
     } catch (error) {

@@ -14,11 +14,12 @@ const Sidebar = () => {
   // const sidebarWidth = open ? "100%" : "0%";
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", zIndex: open ? 800 : 800 }}>
       <Drawer
         variant="permanent"
         sx={{
           flexShrink: 0,
+
           "& > .MuiPaper-root": {
             width: open ? "10%" : "3%",
           },

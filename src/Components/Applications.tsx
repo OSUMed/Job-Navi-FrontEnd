@@ -7,6 +7,8 @@ import {
   DialogActions,
   Container,
   Grid,
+  Typography,
+  DialogContent,
   Button,
   TextField,
   SxProps,
@@ -28,17 +30,20 @@ import { randomId } from "@mui/x-data-grid-generator";
 
 import Sidebar from "./Sidebar";
 import Axios from "axios";
-
+import { detailedDiff } from "deep-object-diff";
 // Reusable Component Imports:
 import CustomEditComponent from "./CustomEditComponent"; // Update with the correct path
 import Form from "./Form";
+import Header from "./Header";
 // interface PropTypes {
 //   cookie: {
 //     session: string;
 //   };
 // }
-
-const hostURL = "https://jobtrackerbackend.up.railway.app/";
+// const hostURL = "http://localhost:8080/api";
+// const hostURL = "https://jobtrackerbackend.up.railway.app/api";
+const hostURL =
+  "https://cors-anywhere-osu.up.railway.app/https://jobtrackerbackend.up.railway.app/api";
 interface Job {
   rowId: number;
   jobTitle: string;
@@ -231,19 +236,19 @@ export default function Applications() {
       renderCell: (params) => {
         const isInEditMode =
           rowModesModel[params.id]?.mode === GridRowModes.Edit;
-        // console.log("what is isInEditMode: ", isInEditMode);
+
         if (isInEditMode) {
           return (
             <>
               <Button
-                onClick={() => setRowSave(params.row.jobId, params.row)}
+                onClick={() => setRowSave(params.row.rowId)}
                 variant="contained"
               >
                 Save
               </Button>
               <pre> </pre>
               <Button
-                onClick={() => setRowCancel(params.row.jobId)}
+                onClick={() => setRowCancel(params.row.rowId)}
                 variant="contained"
               >
                 Cancel
@@ -255,14 +260,14 @@ export default function Applications() {
           <>
             <Button
               sx={{ mr: 1 }}
-              onClick={() => setRowEdit(params.row.jobId)}
+              onClick={() => setRowEdit(params.row.rowId)}
               variant="contained"
             >
               Update
             </Button>
             <br />
             <Button
-              onClick={() => handleDelete(params.row.jobId)}
+              onClick={() => handleDelete(params.row.rowId)}
               variant="contained"
             >
               Delete
@@ -279,7 +284,7 @@ export default function Applications() {
         return (
           <>
             <Button
-              onClick={() => setRowSave(params.row.jobId, params.row)}
+              onClick={() => setRowSave(params.row.jobId)}
               variant="contained"
             >
               Save
@@ -326,8 +331,9 @@ export default function Applications() {
   React.useEffect(() => {
     // setLoading(true);
 
-    Axios.get(`${hostURL}/api/applications`) // Replace "/applications" with the appropriate API endpoint
+    Axios.get(`${hostURL}/applications`) // Replace "/applications" with the appropriate API endpoint
       .then((response) => {
+        console.log("Connected toL ", `${hostURL}/applications`);
         const transformedJobs = response.data.map((job: Job) => ({
           rowId: job.rowId,
           jobTitle: job.jobTitle,
@@ -340,8 +346,8 @@ export default function Applications() {
           company: job.company,
           dateApplied: job.dateApplied,
         }));
-
-        setAddJob(transformedJobs);
+        console.log("response data: ", response.data);
+        setAllJobs(transformedJobs);
       })
       .catch((error) => {
         console.error("Error fetching jobs: ", error);
@@ -444,21 +450,31 @@ export default function Applications() {
   };
 
   // User chooses dialog options on editted cell:
-  const handleDataChangeDialog = (response: string) => {
+  const handleDataChangeDialog = async (response: string) => {
     const { newRow, oldRow, resolve } = confirmData;
+    console.log("What is the new row? ", newRow);
     // console.log("New row is: ", newRow, newRow.jobId);
     // If user responds yes, send new row to database, else resolve old row back:
     if (response === "Yes") {
-      //   Axios.put(`${baseURL}/jobs/${newRow.jobId}`, newRow, {
-      //     headers: {
-      //       Authorization: `Bearer ${store.session}`,
-      //     },
-      //   }).then((response) => {
-      //     // setAllJobs(response.data);
-      //     // setPosts(response.data);
-      //     console.log("3nd localhost res is: ", response.data);
-      //   });
-      resolve(newRow);
+      try {
+        const updJob: Job = {
+          rowId: newRow.rowId,
+          jobTitle: newRow.jobTitle,
+          dateCreated: newRow.dateCreated,
+          priority: newRow.priority,
+          status: newRow.status,
+          salary: newRow.salary,
+          location: newRow.location,
+          notes: newRow.notes,
+          company: newRow.company,
+          dateApplied: newRow.dateApplied,
+        };
+        console.log("updJob is: ", updJob);
+        await Axios.post(`${hostURL}/applications/${newRow.rowId}`, updJob);
+        resolve(newRow);
+      } catch (error) {
+        console.error("Error updating Job:", error);
+      }
     } else if (response === "No") {
       resolve(oldRow);
     }
@@ -473,6 +489,9 @@ export default function Applications() {
     }
     const { newRow, oldRow, resolve } = confirmData;
     console.log("what is row right renderConfirmDialog: ", newRow);
+    const differences = detailedDiff(oldRow, newRow);
+    const changedKeys = Object.keys(differences.updated);
+    console.log("what is row right renderConfirmDialog: ", newRow);
 
     // Case 2: if new input is same as old input, don't show dialog:
     if (JSON.stringify(newRow) === JSON.stringify(oldRow)) {
@@ -484,38 +503,42 @@ export default function Applications() {
     // Default Case: render confirmation dialog:
     return (
       <Dialog maxWidth="xs" open={confirmData}>
-        <DialogTitle>Are you sure?</DialogTitle>
+        <DialogTitle>Confirm Update</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" gutterBottom>
+            You are about to update the following information:
+          </Typography>
+          {changedKeys.map((key) => (
+            <div
+              key={key}
+              style={{
+                backgroundColor: "#f8f8f8",
+                padding: "8px",
+                border: "1px solid #ccc",
+                marginBottom: "8px",
+              }}
+            >
+              <strong>{key}:</strong>{" "}
+              {differences.updated[key as keyof typeof differences.updated]}
+            </div>
+          ))}
+          <Typography variant="body1" gutterBottom style={{ marginTop: "1em" }}>
+            Are you sure you want to proceed?
+          </Typography>
+        </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleDataChangeDialog("No")}>No</Button>
-          <Button onClick={() => handleDataChangeDialog("Yes")}>Yes</Button>
+          <Button onClick={() => handleDataChangeDialog("No")} color="primary">
+            No
+          </Button>
+          <Button onClick={() => handleDataChangeDialog("Yes")} color="primary">
+            Yes
+          </Button>
         </DialogActions>
       </Dialog>
     );
   };
 
   /*------------------------------------Delete Row Logic------------------------------------*/
-
-  // const handleDelete = (jobId: number) => {
-  //   // const getDeleteItem = allJobs.filter((row) => row.jobId === jobId);
-  //   // const delete_record = { jobId: jobId };
-  //   const updatedApplications = allJobs.filter((row) => row.jobId !== jobId);
-  //   // console.log("updated contacts are: ", contactId, updatedContacts);
-  //   setAllJobs(updatedApplications);
-  //   // Axios.delete(`${baseURL}/jobs/${jobId}`, {
-  //   //   headers: {
-  //   //     Authorization: `Bearer ${store.session}`,
-  //   //   },
-  //   // }).then((response) => {
-  //   //   Axios.get(`${baseURL}/jobs`, {
-  //   //     headers: {
-  //   //       Authorization: `Bearer ${store.session}`,
-  //   //     },
-  //   //   }).then((response) => {
-  //   //     setAllJobs(response.data);
-  //   //   });
-  //   //   console.log("3nd localhost res is: ", response.data);
-  //   // });
-  // };
 
   const fetchApplications = async () => {
     try {
@@ -549,31 +572,13 @@ export default function Applications() {
   };
 
   const setRowEdit = (id: GridRowId) => {
+    console.log("We just setRowEdit");
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
-  // const setRowSave = (id: GridRowId) => {
-  //   setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  // };
-  const setRowSave = async (id: GridRowId, row: GridRowModel) => {
-    try {
-      const updJob: Job = {
-        rowId: row.rowId,
-        jobTitle: row.jobTitle,
-        dateCreated: row.dateCreated,
-        priority: row.priority,
-        status: row.status,
-        salary: row.salary,
-        location: row.location,
-        notes: row.notes,
-        company: row.company,
-        dateApplied: row.dateApplied,
-      };
-      await Axios.post(`http://${hostURL}/applications/${id}`, updJob);
-      await fetchApplications();
-      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-    } catch (error) {
-      console.error("Error deleting contact:", error);
-    }
+
+  const setRowSave = async (id: GridRowId) => {
+    console.log("We just setRowSAVE");
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
   const setRowCancel = (id: GridRowId) => {
     setRowModesModel({
@@ -636,6 +641,7 @@ export default function Applications() {
   return (
     <Box sx={{ display: "flex" }}>
       <Sidebar />
+
       <Box
         component="main"
         sx={{
@@ -644,6 +650,7 @@ export default function Applications() {
           overflow: "auto", //content overflows its container -> scrollbars appear
         }}
       >
+        <Header />
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid item xs={12} md={8} lg={9}>
             <Paper
@@ -660,7 +667,7 @@ export default function Applications() {
                   columns={columns}
                   rows={allJobs}
                   getRowHeight={() => "auto"}
-                  getRowId={(row) => row.jobId}
+                  getRowId={(row) => row.rowId}
                   autoPageSize={true}
                   editMode="row"
                   processRowUpdate={processRowUpdate}

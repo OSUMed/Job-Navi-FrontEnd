@@ -8,6 +8,8 @@ import {
   DialogTitle,
   DialogActions,
   Container,
+  DialogContent,
+  Typography,
   Grid,
   Button,
   TextField,
@@ -32,12 +34,15 @@ import Sidebar from "./Sidebar";
 // Reusable Component Imports:
 import CustomEditComponent from "./CustomEditComponent";
 import Form from "./Form";
-
+import { detailedDiff } from "deep-object-diff";
+import Header from "./Header";
 // Update with the correct path
 
 // import Axios from "axios";
+// const hostURL = "http://localhost:8080";
+// const hostURL = "https://jobtrackerbackend.up.railway.app/";
 const hostURL =
-  "https://cors-anywhere-osu.up.railway.app/https://jobtrackerbackend.up.railway.app/";
+  "https://cors-anywhere-osu.up.railway.app/https://jobtrackerbackend.up.railway.app/api";
 // Interface for Jobs:
 interface Contact {
   rowId: GridRowId;
@@ -170,10 +175,11 @@ export default function Contacts({ cookie }: PropTypes) {
           rowModesModel[params.id]?.mode === GridRowModes.Edit;
         // console.log("what is isInEditMode: ", params);
         if (isInEditMode) {
+          console.log("IneditMode outside setRowSave call: ", params);
           return (
             <>
               <Button
-                onClick={() => setRowSave(params.row.rowId, params.row)}
+                onClick={() => setRowSave(params.row.rowId)}
                 variant="contained"
               >
                 Save
@@ -215,7 +221,7 @@ export default function Contacts({ cookie }: PropTypes) {
         return (
           <>
             <Button
-              onClick={() => setRowSave(params.row.contactId, params.row)}
+              onClick={() => setRowSave(params.row.contactId)}
               variant="contained"
             >
               Save
@@ -243,9 +249,9 @@ export default function Contacts({ cookie }: PropTypes) {
 
   React.useEffect(() => {
     // setLoading(true);
-    const headers = {
-      "Access-Control-Allow-Origin": "*", // Replace with the allowed origin
-    };
+    // const headers = {
+    //   "Access-Control-Allow-Origin": "*", // Replace with the allowed origin
+    // };
     Axios.get(`${hostURL}/contacts`)
       // Axios.get("https://jobtrackerbackend.up.railway.app/contacts", { headers })
       .then((response) => {
@@ -328,22 +334,30 @@ export default function Contacts({ cookie }: PropTypes) {
   };
 
   // User chooses dialog options on editted cell:
-  const handleDataChangeDialog = (response: string) => {
+  const handleDataChangeDialog = async (response: string) => {
     const { newRow, oldRow, resolve } = confirmData;
+    console.log("What is the new row? ", newRow);
     // console.log("New row is: ", newRow, newRow.jobId);
     // If user responds yes, send new row to database, else resolve old row back:
     if (response === "Yes") {
-      // Axios.put(`${baseURL}/jobs/${newRow.jobId}`, newRow, {
-      //   headers: {
-      //     Authorization: `Bearer ${cookie.session}`,
-      //   },
-      // }).then((response) => {
-      //   // setAllJobs(response.data);
-      //   // setPosts(response.data);
-      //   console.log("3nd localhost res is: ", response.data);
-      //   resolve(newRow);
-      // });
-      resolve(newRow);
+      try {
+        const updContact: Contact = {
+          rowId: newRow.rowId,
+          companyName: newRow.companyName,
+          fullName: newRow.fullName,
+          title: newRow.title,
+          email: newRow.email,
+          phone: newRow.phone,
+          relationship: newRow.relationship,
+          notes: newRow.notes,
+          followUpDate: newRow.followUpDate,
+        };
+        console.log("UpdContact is: ", updContact);
+        await Axios.post(`${hostURL}/contacts/${newRow.rowId}`, updContact);
+        resolve(newRow);
+      } catch (error) {
+        console.error("Error updating contact:", error);
+      }
     } else if (response === "No") {
       resolve(oldRow);
     }
@@ -358,7 +372,8 @@ export default function Contacts({ cookie }: PropTypes) {
     }
     const { newRow, oldRow, resolve } = confirmData;
     console.log("what is row right renderConfirmDialog: ", newRow);
-
+    const differences = detailedDiff(oldRow, newRow);
+    const changedKeys = Object.keys(differences.updated);
     // Case 2: if new input is same as old input, don't show dialog:
     if (JSON.stringify(newRow) === JSON.stringify(oldRow)) {
       resolve(oldRow);
@@ -369,10 +384,36 @@ export default function Contacts({ cookie }: PropTypes) {
     // Default Case: render confirmation dialog:
     return (
       <Dialog maxWidth="xs" open={confirmData}>
-        <DialogTitle>Are you sure?</DialogTitle>
+        <DialogTitle>Confirm Update</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" gutterBottom>
+            You are about to update the following information:
+          </Typography>
+          {changedKeys.map((key) => (
+            <div
+              key={key}
+              style={{
+                backgroundColor: "#f8f8f8",
+                padding: "8px",
+                border: "1px solid #ccc",
+                marginBottom: "8px",
+              }}
+            >
+              <strong>{key}:</strong>{" "}
+              {differences.updated[key as keyof typeof differences.updated]}
+            </div>
+          ))}
+          <Typography variant="body1" gutterBottom style={{ marginTop: "1em" }}>
+            Are you sure you want to proceed?
+          </Typography>
+        </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleDataChangeDialog("No")}>No</Button>
-          <Button onClick={() => handleDataChangeDialog("Yes")}>Yes</Button>
+          <Button onClick={() => handleDataChangeDialog("No")} color="primary">
+            No
+          </Button>
+          <Button onClick={() => handleDataChangeDialog("Yes")} color="primary">
+            Yes
+          </Button>
         </DialogActions>
       </Dialog>
     );
@@ -401,96 +442,21 @@ export default function Contacts({ cookie }: PropTypes) {
 
   const handleDelete = async (contactId: string) => {
     try {
-      await Axios.post(`http://${hostURL}/contacts/${contactId}/delete`);
+      await Axios.post(`${hostURL}/contacts/${contactId}/delete`);
       await fetchContacts();
       alert("Contact deleted!");
     } catch (error) {
       console.error("Error deleting contact:", error);
     }
   };
-  // const handleUpdate = async (contactId: string) => {
-  //   try {
-  //     await Axios.post(`http://localhost:8080/contacts/`);
-  //     await fetchContacts();
-  //     alert("Contact deleted!");
-  //   } catch (error) {
-  //     console.error("Error deleting contact:", error);
-  //   }
-  // };
-
-  // const handleDelete2 = (contactId: number) => {
-  //   // const getDeleteItem = allContacts.filter(
-  //   //   (row) => row.contactId === contactId
-  //   // );
-  //   const updatedContacts = allContacts.filter(
-  //     (row) => row.contactId !== contactId
-  //   );
-  //   console.log("updated contacts are: ", contactId, updatedContacts);
-  //   Axios.get(`http://localhost:8080//contacts/${contactId}/delete`)
-  //   .then((response) => {
-  //     Axios.get("http://localhost:8080/contacts")
-  //     .then((response) => {
-  //       const transformedContacts = response.data.map((contact: Contact) => ({
-  //         rowId: contact.rowId,
-  //         companyName: contact.companyName,
-  //         fullName: contact.fullName,
-  //         title: contact.title,
-  //         email: contact.email,
-  //         phone: contact.phone,
-  //         relationship: contact.relationship,
-  //         notes: contact.notes,
-  //         followUpDate: contact.followUpDate,
-  //       }));
-
-  //       setAllContacts(transformedContacts);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching contacts: ", error);
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  //   }
-
-  //   // const delete_record = { contactId: contactId };
-  //   // Axios.delete(`${baseURL}/contact/${jobId}`, {
-  //   //   headers: {
-  //   //     Authorization: `Bearer ${cookie.session}`,
-  //   //   },
-  //   // }).then((response) => {
-  //   //   Axios.get(`${baseURL}/contacts`, {
-  //   //     headers: {
-  //   //       Authorization: `Bearer ${cookie.session}`,
-  //   //     },
-  //   //   }).then((response) => {
-  //   //     setAllContacts(response.data);
-  //   //   });
-  //   //   console.log("3nd localhost res is: ", response.data);
-  //   // });
-  // };
 
   const setRowEdit = (id: GridRowId) => {
+    console.log("We just setRowEdit");
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
-  const setRowSave = async (id: GridRowId, row: GridRowModel) => {
-    try {
-      const updContact: Contact = {
-        rowId: row.rowId,
-        companyName: row.companyName,
-        fullName: row.fullName,
-        title: row.title,
-        email: row.email,
-        phone: row.phone,
-        relationship: row.relationship,
-        notes: row.notes,
-        followUpDate: row.followUpDate,
-      };
-      await Axios.post(`http://${hostURL}/contacts/${id}`, updContact);
-      await fetchContacts();
-      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-    } catch (error) {
-      console.error("Error deleting contact:", error);
-    }
+  const setRowSave = async (id: GridRowId) => {
+    console.log("We just setRowSAVE");
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
   const setRowCancel = (id: GridRowId) => {
     setRowModesModel({
@@ -548,6 +514,7 @@ export default function Contacts({ cookie }: PropTypes) {
   return (
     <Box sx={{ display: "flex" }}>
       <Sidebar />
+
       <Box
         component="main"
         sx={{
@@ -556,6 +523,7 @@ export default function Contacts({ cookie }: PropTypes) {
           overflow: "auto",
         }}
       >
+        <Header />
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid item xs={12} md={8} lg={9}>
             <Paper

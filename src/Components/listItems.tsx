@@ -37,6 +37,23 @@ export const mainListItems = (
   </React.Fragment>
 );
 
+export const mediumListItems = (
+  <React.Fragment>
+    <ListItemButton component={Link} to="/">
+      <ListItemText primary="Dashboard" />
+    </ListItemButton>
+    <ListItemButton component={Link} to="/contacts">
+      <ListItemText primary="Contacts" />
+    </ListItemButton>
+    <ListItemButton component={Link} to="/applications">
+      <ListItemText primary="Applications" />
+    </ListItemButton>
+    <ListItemButton component={Link} to="/notes">
+      <ListItemText primary="Notes" />
+    </ListItemButton>
+  </React.Fragment>
+);
+
 export const shortListItems = (
   <React.Fragment>
     <ListItemButton

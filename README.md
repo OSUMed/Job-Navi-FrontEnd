@@ -1,4 +1,19 @@
-# Getting Started with Create React App
+# Job Navi Web Application
+
+Welcome to the Job Navi web application frontend repository! This project is a part of the Job Navi application, which helps users manage and track job applications efficiently. The frontend is built using React, TypeScript, Material UI, and other technologies.
+
+## Branch Information
+
+The hosted site is available on the `sql-injection-branch` branch. To access the live site, visit: [https://jobtrackerfe.netlify.app/](https://jobtrackerfe.netlify.app/)
+
+## Technologies Used
+
+- React
+- TypeScript
+- Material UI
+- Mobx
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

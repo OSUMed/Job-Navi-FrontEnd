@@ -36,3 +36,64 @@ export const mainListItems = (
     </ListItemButton>
   </React.Fragment>
 );
+
+export const shortListItems = (
+  <React.Fragment>
+    <ListItemButton
+      component={Link}
+      to="/"
+      sx={{
+        display: "flex",
+        justifyContent: "center", // Center horizontally
+        alignItems: "center", // Center vertically
+        marginLeft: "25px",
+      }}
+    >
+      <ListItemIcon>
+        <DashboardIcon />
+      </ListItemIcon>
+    </ListItemButton>
+    <ListItemButton
+      component={Link}
+      to="/contacts"
+      sx={{
+        display: "flex",
+        justifyContent: "center", // Center horizontally
+        alignItems: "center", // Center vertically
+        marginLeft: "25px",
+      }}
+    >
+      <ListItemIcon>
+        <ContactsIcon />
+      </ListItemIcon>
+    </ListItemButton>
+    <ListItemButton
+      component={Link}
+      to="/applications"
+      sx={{
+        display: "flex",
+        justifyContent: "center", // Center horizontally
+        alignItems: "center", // Center vertically
+        marginLeft: "25px",
+      }}
+    >
+      <ListItemIcon>
+        <AttachFileIcon />
+      </ListItemIcon>
+    </ListItemButton>
+    <ListItemButton
+      component={Link}
+      to="/notes"
+      sx={{
+        display: "flex",
+        justifyContent: "center", // Center horizontally
+        alignItems: "center", // Center vertically
+        marginLeft: "25px",
+      }}
+    >
+      <ListItemIcon>
+        <NotesIcon />
+      </ListItemIcon>
+    </ListItemButton>
+  </React.Fragment>
+);

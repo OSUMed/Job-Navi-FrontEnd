@@ -2,15 +2,15 @@ import React from "react";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import Dashboard from "./Components/Dashboard";
-import Contacts from "./Components/Contacts";
-import Applications from "./Components/Applications";
-import Notes from "./Components/Notes";
+import Dashboard from "./components/Dashboard";
+import Contacts from "./components/Contacts";
+import Applications from "./components/Applications";
+import Notes from "./components/Notes";
 import "tailwindcss/tailwind.css";
 import { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { LoginCard } from "./Components/auth/LoginCard";
-import { LogoutCard } from "./Components/auth/LogoutCard";
+import { LoginCard } from "./components/auth/LoginCard";
+import { LogoutCard } from "./components/auth/LogoutCard";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null); // To store the user object

@@ -5,7 +5,6 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 
 export default function Notes() {
   return (

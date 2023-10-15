@@ -1,20 +1,9 @@
-import * as React from "react";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiDrawer from "@mui/material/Drawer";
-import Box from "@mui/material/Box";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import { mainListItems } from "./listItems";
 import Sidebar from "./Sidebar";
-
-const drawerWidth: number = 240;
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
+import Header from "./Header";
+import Box from "@mui/material/Box";
 
 export default function Dashboard() {
   return (
@@ -29,6 +18,7 @@ export default function Dashboard() {
           overflow: "auto",
         }}
       >
+        <Header />
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid item xs={12} md={8} lg={9}>
             <Paper
@@ -39,7 +29,7 @@ export default function Dashboard() {
                 height: 240,
               }}
             >
-              Applications
+              Welcome!
             </Paper>
           </Grid>
         </Container>

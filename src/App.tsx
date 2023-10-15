@@ -11,6 +11,8 @@ import { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { LoginCard } from "./Components/auth/LoginCard";
 import { LogoutCard } from "./Components/auth/LogoutCard";
+import ModeToggle from "./Components/ModeToggle";
+import { ThemeProvider } from "@/Components/theme-provider";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null); // To store the user object
@@ -31,25 +33,31 @@ const App: React.FC = () => {
     return <div>Loading...</div>; // Or a loading spinner/component
   }
   return (
-    <BrowserRouter>
-      <Routes>
-        {user ? (
-          <>
-            <Route path="/" element={<Applications />} />
-            <Route
-              path="contacts"
-              element={<Contacts cookie={{ session: "" }} />}
-            />
-            <Route path="applications" element={<Applications />} />
-            <Route path="notes" element={<Notes />} />
-            <Route path="logout" element={<LogoutCard />} />
-          </>
-        ) : (
-          // Render a login component or redirect to a login page
-          <Route path="/" element={<LoginCard />} />
-        )}
-      </Routes>
-    </BrowserRouter>
+    <>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <ModeToggle />
+        <BrowserRouter>
+          <Routes>
+            {user ? (
+              <>
+                <Route path="/" element={<Applications />} />
+                <Route
+                  path="contacts"
+                  element={<Contacts cookie={{ session: "" }} />}
+                />
+                <Route path="applications" element={<Applications />} />
+                <Route path="notes" element={<Notes />} />
+                <Route path="logout" element={<LogoutCard />} />
+                <Route path="test" element={<ModeToggle />} />
+              </>
+            ) : (
+              // Render a login component or redirect to a login page
+              <Route path="/" element={<LoginCard />} />
+            )}
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </>
   );
 };
 

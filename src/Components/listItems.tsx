@@ -7,6 +7,7 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import ContactsIcon from "@mui/icons-material/Contacts";
 import NotesIcon from "@mui/icons-material/Notes";
 import { Link } from "react-router-dom";
+import { LogoutCard } from "./auth/LogoutCard";
 
 export const mainListItems = (
   <React.Fragment>
@@ -33,6 +34,12 @@ export const mainListItems = (
         <NotesIcon />
       </ListItemIcon>
       <ListItemText primary="Notes" />
+    </ListItemButton>
+    <ListItemButton component={Link} to="/logout">
+      <ListItemIcon>
+        <NotesIcon />
+      </ListItemIcon>
+      <ListItemText primary="Log Out" />
     </ListItemButton>
   </React.Fragment>
 );

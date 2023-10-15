@@ -6,24 +6,48 @@ import Dashboard from "./Components/Dashboard";
 import Contacts from "./Components/Contacts";
 import Applications from "./Components/Applications";
 import Notes from "./Components/Notes";
+import "tailwindcss/tailwind.css";
+import { useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { LoginCard } from "./Components/auth/LoginCard";
+import { LogoutCard } from "./Components/auth/LogoutCard";
 
 const App: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null); // To store the user object
+  const [loading, setLoading] = useState(true); // To manage a loading state during auth check
+
+  useEffect(() => {
+    const auth = getAuth();
+    // Listener for auth state (logged in or out)
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser); // If logged in, currentUser is user object, else null
+      setLoading(false);
+    });
+    // Clean up the listener on component unmount
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>; // Or a loading spinner/component
+  }
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route
-          path="contacts"
-          element={
-            <Contacts
-              cookie={{
-                session: "",
-              }}
+        {user ? (
+          <>
+            <Route path="/" element={<Dashboard />} />
+            <Route
+              path="contacts"
+              element={<Contacts cookie={{ session: "" }} />}
             />
-          }
-        />
-        <Route path="applications" element={<Applications />} />
-        <Route path="notes" element={<Notes />} />
+            <Route path="applications" element={<Applications />} />
+            <Route path="notes" element={<Notes />} />
+            <Route path="logout" element={<LogoutCard />} />
+          </>
+        ) : (
+          // Render a login component or redirect to a login page
+          <Route path="/" element={<LoginCard />} />
+        )}
       </Routes>
     </BrowserRouter>
   );

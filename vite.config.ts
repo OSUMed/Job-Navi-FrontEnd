@@ -7,11 +7,14 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
-    chunkSizeWarningLimit: 1000, // Adjust the chunk size warning limit as needed
+    chunkSizeWarningLimit: 2000, // Adjust the chunk size warning limit as needed
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Specify manual chunks here if necessary
+        manualChunks(id) {
+          // Manually specify chunks for specific dependencies
+          if (id.includes("some-large-library")) {
+            return "large-library";
+          }
         },
       },
     },

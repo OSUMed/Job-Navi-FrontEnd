@@ -35,7 +35,7 @@ const App: React.FC = () => {
       <Routes>
         {user ? (
           <>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Applications />} />
             <Route
               path="contacts"
               element={<Contacts cookie={{ session: "" }} />}

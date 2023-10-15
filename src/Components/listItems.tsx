@@ -58,6 +58,9 @@ export const mediumListItems = (
     <ListItemButton component={Link} to="/notes">
       <ListItemText primary="Notes" />
     </ListItemButton>
+    <ListItemButton component={Link} to="/logout">
+      <ListItemText primary="Log Out" />
+    </ListItemButton>
   </React.Fragment>
 );
 

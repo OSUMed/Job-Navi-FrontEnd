@@ -41,9 +41,9 @@ import Header from "./Header";
 //   };
 // }
 // const hostURL = "http://localhost:8080/api";
-// const hostURL = "https://jobtrackerbackend.up.railway.app/api";
-const hostURL =
-  "https://cors-anywhere-osu.up.railway.app/https://jobtrackerbackend.up.railway.app/api";
+const hostURL = "https://jobtrackerbackend.up.railway.app/api";
+// const hostURL =
+// "https://cors-anywhere-osu.up.railway.app/https://jobtrackerbackend.up.railway.app/api";
 interface Job {
   rowId: number;
   jobTitle: string;

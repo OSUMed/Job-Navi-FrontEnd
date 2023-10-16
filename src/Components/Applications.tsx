@@ -424,7 +424,7 @@ export default function Applications() {
     };
 
     try {
-      await Axios.post(`${hostURL}/api/applications`, newJob);
+      await Axios.post(`${hostURL}/applications`, newJob);
       setAllJobs([...allJobs, newJob]);
     } catch (error) {
       console.error("Error adding job application:", error);

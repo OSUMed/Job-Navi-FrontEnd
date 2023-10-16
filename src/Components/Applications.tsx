@@ -34,7 +34,7 @@ import { detailedDiff } from "deep-object-diff";
 // Reusable Component Imports:
 import CustomEditComponent from "./CustomEditComponent"; // Update with the correct path
 import Form from "./Form";
-import Header from "./Header";
+import Header from "./NavBar";
 // interface PropTypes {
 //   cookie: {
 //     session: string;
@@ -652,8 +652,6 @@ export default function Applications() {
   ];
   return (
     <Box sx={{ display: "flex" }}>
-      <Sidebar />
-
       <Box
         component="main"
         sx={{

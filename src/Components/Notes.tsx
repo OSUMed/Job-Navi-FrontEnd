@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Header from "./NaviBar";
 import Box from "@mui/material/Box";
-import Header from "./NavBar";
+
 export default function Notes() {
   return (
     <Box sx={{ display: "flex" }}>

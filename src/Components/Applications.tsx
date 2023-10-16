@@ -27,15 +27,12 @@ import {
 } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
-
-import Sidebar from "./Sidebar";
 import Header from "./NaviBar";
 import Axios from "axios";
 import { detailedDiff } from "deep-object-diff";
 // Reusable Component Imports:
 import CustomEditComponent from "./CustomEditComponent"; // Update with the correct path
 import Form from "./Form";
-import Header from "./NavBar";
 
 // interface PropTypes {
 //   cookie: {

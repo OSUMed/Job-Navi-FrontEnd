@@ -588,55 +588,67 @@ export default function Applications() {
   };
   const fields = [
     {
+      label: "Job Title",
       name: "jobTitle",
       type: "text",
       required: true,
       placeholder: "Enter a job name..",
     },
     {
+      label: "Date Created",
       name: "dateCreated",
       type: "date",
       required: true,
       placeholder: "Enter location..",
     },
-    { name: "priority", type: "text", placeholder: "Enter priority.." },
     {
+      label: "Priority",
+      name: "priority",
+      type: "text",
+      placeholder: "Enter priority..",
+    },
+    {
+      label: "Status",
       name: "status",
       type: "text",
       required: true,
       placeholder: "Enter status..",
     },
     {
+      label: "Salary",
       name: "salary",
       type: "text",
       required: true,
       placeholder: "Enter salary..",
     },
     {
+      label: "Location",
       name: "location",
       type: "text",
       required: true,
       placeholder: "Enter location..",
     },
     {
+      label: "Notes",
       name: "notes",
       type: "text",
       required: true,
       placeholder: "Enter notes..",
     },
     {
+      label: "Company",
       name: "company",
       type: "text",
       required: true,
       placeholder: "Enter a company name..",
     },
     {
+      label: "Date Applied",
       name: "dateApplied",
       type: "date",
       required: true,
       placeholder: "Enter a date applied..",
     },
-    // Add more fields here if needed
   ];
   return (
     <Box sx={{ display: "flex" }}>

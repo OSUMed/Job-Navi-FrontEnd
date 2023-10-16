@@ -26,6 +26,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { TfiWrite } from "react-icons/ti";
+import classNames from "classnames";
+import { useLocation } from "react-router-dom";
+import { BsSendCheckFill } from "react-icons/bs";
 
 const Header: React.FC = () => {
   //   const handleLogout = () => {
@@ -33,6 +37,7 @@ const Header: React.FC = () => {
   //     // Handle logout logic here...
   //   };
   const navigate = useNavigate();
+  const location = useLocation();
   const logOut = async () => {
     try {
       const auth = getAuth();
@@ -44,50 +49,47 @@ const Header: React.FC = () => {
     }
   };
 
+  const links = [
+    { label: "Applications", href: "/applications" },
+    { label: "Contacts", href: "/contacts" },
+    { label: "Notes", href: "/notes" },
+  ];
+
   return (
-    <header className="p-4 bg-blue-400 text-white flex justify-end items-center">
-      <NavigationMenu className="flex-grow">
-        <ul className="flex space-x-4 justify-end">
-          <li>
-            <Link to="/applications" className="hover:underline">
-              Applications
-            </Link>
-          </li>
-          <li>
-            <Link to="/contacts" className="hover:underline">
-              Contacts
-            </Link>
-          </li>
-          <li>
-            <Link to="/notes" className="hover:underline">
-              Notes
-            </Link>
-          </li>
+    <nav className="flex space-x-6 border-b mb-5 px-5 h-14 items-center bg-white justify-between">
+      <div className="flex space-x-6">
+        <Link to="/">
+          <BsSendCheckFill />
+        </Link>
+        <ul className="flex space-x-6">
+          {links.map((link) => {
+            const isHighlighted =
+              (link.href === "/applications" && location.pathname === "/") ||
+              location.pathname === link.href;
+
+            return (
+              <Link
+                key={link.href}
+                className={classNames({
+                  "text-zinc-900": isHighlighted,
+                  "text-zinc-500": !isHighlighted,
+                  "hover:text-zinc-900 transition-colors": true,
+                })}
+                to={link.href}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </ul>
-      </NavigationMenu>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button
-            variant="destructive"
-            className="ml-4 px-4 py-2 rounded hover:bg-red-600 transition-colors"
-          >
-            Log Out
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Log Out</AlertDialogTitle>
-            <AlertDialogDescription>
-              Use the button below to sign out of your account.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={logOut}>Continue</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </header>
+      </div>
+      <Button
+        onClick={logOut}
+        className="ml-4 px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition-colors"
+      >
+        <ExitToAppIcon /> Log Out
+      </Button>
+    </nav>
   );
 };
 

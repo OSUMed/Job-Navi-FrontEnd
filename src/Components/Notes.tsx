@@ -1,10 +1,8 @@
-import * as React from "react";
-
-import Sidebar from "./Sidebar";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Header from "./NaviBar";
+import Box from "@mui/material/Box";
 
 export default function Notes() {
   return (

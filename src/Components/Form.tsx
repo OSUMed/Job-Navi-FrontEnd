@@ -20,23 +20,33 @@ const Form: React.FC<FormProps> = ({
   onChange,
 }) => {
   return (
-    <form onSubmit={onSubmit}>
-      {fields.map((field) => (
-        <TextField
-          key={field.name}
-          type={field.type}
-          name={field.name}
-          required={field.required}
-          placeholder={field.placeholder}
-          onChange={onChange}
-          variant="outlined"
-          style={{ width: "200px", margin: "5px" }}
-        />
-      ))}
-      <br />
-      <Button type="submit" variant="contained" color="primary">
-        {formName}
-      </Button>
+    <form
+      onSubmit={onSubmit}
+      className="max-w-md mx-auto p-4 border border-gray-300 rounded"
+    >
+      <div className="flex flex-col space-y-4">
+        {fields.map((field) => (
+          <div key={field.name} className="flex flex-col space-y-2">
+            <label htmlFor={field.name} className="font-bold text-base">
+              {field.label}
+            </label>
+            <TextField
+              type={field.type}
+              name={field.name}
+              required={field.required}
+              placeholder={field.placeholder}
+              onChange={onChange}
+              variant="outlined"
+              className="w-full max-w-lg text-sm"
+            />
+          </div>
+        ))}
+      </div>
+      <div className="mt-5">
+        <Button type="submit" variant="contained" color="primary">
+          {formName}
+        </Button>
+      </div>
     </form>
   );
 };

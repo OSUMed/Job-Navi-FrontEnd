@@ -35,7 +35,8 @@ import Sidebar from "./Sidebar";
 import CustomEditComponent from "./CustomEditComponent";
 import Form from "./Form";
 import { detailedDiff } from "deep-object-diff";
-import Header from "./NaviBar";
+import Header from "./NavBar";
+
 // Update with the correct path
 
 // import Axios from "axios";
@@ -467,43 +468,55 @@ export default function Contacts({ cookie }: PropTypes) {
 
   const fields = [
     {
+      label: "Company Name",
       name: "companyName",
       type: "text",
       required: true,
       placeholder: "Enter company name..",
     },
     {
+      label: "Full Name",
       name: "fullName",
-      type: "date",
+      type: "text",
       required: true,
       placeholder: "Enter full name..",
     },
-    { name: "title", type: "text", placeholder: "Enter title.." },
     {
+      label: "Title",
+      name: "title",
+      type: "text",
+      placeholder: "Enter title..",
+    },
+    {
+      label: "Email",
       name: "email",
       type: "text",
       required: true,
       placeholder: "Enter email..",
     },
     {
+      label: "Phone",
       name: "phone",
       type: "text",
       required: true,
       placeholder: "Enter phone..",
     },
     {
+      label: "Relationship",
       name: "relationship",
       type: "text",
       required: true,
       placeholder: "Enter relationship..",
     },
     {
+      label: "Notes",
       name: "notes",
       type: "text",
       required: true,
       placeholder: "Enter notes..",
     },
     {
+      label: "Follow Up Date",
       name: "followUpDate",
       type: "date",
       required: true,

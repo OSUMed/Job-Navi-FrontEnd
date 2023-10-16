@@ -87,18 +87,6 @@ const Header: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      {/* <Link
-        to="/logout"
-        className="ml-4 px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition-colors"
-      >
-        <ExitToAppIcon /> Log Out
-      </Link> */}
-      {/* <Button
-        onClick={handleLogout}
-        className="ml-4 px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition-colors"
-      > */}
-
-      {/* </Button> */}
     </header>
   );
 };

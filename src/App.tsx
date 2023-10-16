@@ -11,6 +11,9 @@ import { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { LoginCard } from "./components/auth/LoginCard";
 import { LogoutCard } from "./components/auth/LogoutCard";
+import Header from "./components/NaviBar";
+import "@radix-ui/themes/styles.css";
+import { Theme } from "@radix-ui/themes";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null); // To store the user object
@@ -31,25 +34,28 @@ const App: React.FC = () => {
     return <div>Loading...</div>; // Or a loading spinner/component
   }
   return (
-    <BrowserRouter>
-      <Routes>
-        {user ? (
-          <>
-            <Route path="/" element={<Applications />} />
-            <Route
-              path="contacts"
-              element={<Contacts cookie={{ session: "" }} />}
-            />
-            <Route path="applications" element={<Applications />} />
-            <Route path="notes" element={<Notes />} />
-            <Route path="logout" element={<LogoutCard />} />
-          </>
-        ) : (
-          // Render a login component or redirect to a login page
-          <Route path="/" element={<LoginCard />} />
-        )}
-      </Routes>
-    </BrowserRouter>
+    <Theme>
+      <BrowserRouter>
+        <Routes>
+          {user ? (
+            <>
+              <Route path="/" element={<Applications />} />
+              <Route
+                path="contacts"
+                element={<Contacts cookie={{ session: "" }} />}
+              />
+              <Route path="applications" element={<Applications />} />
+              <Route path="notes" element={<Notes />} />
+              <Route path="logout" element={<LogoutCard />} />
+              <Route path="test" element={<Header />} />
+            </>
+          ) : (
+            // Render a login component or redirect to a login page
+            <Route path="/" element={<LoginCard />} />
+          )}
+        </Routes>
+      </BrowserRouter>
+    </Theme>
   );
 };
 

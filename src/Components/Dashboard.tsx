@@ -2,13 +2,12 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Sidebar from "./Sidebar";
-import Header from "./Header";
+import Header from "./NaviBar";
 import Box from "@mui/material/Box";
 
 export default function Dashboard() {
   return (
     <Box sx={{ display: "flex", backgroundColor: "#F5F5F5" }}>
-      <Sidebar />
       <Box
         component="main"
         sx={{

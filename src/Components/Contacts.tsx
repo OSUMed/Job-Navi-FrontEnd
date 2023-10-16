@@ -35,7 +35,7 @@ import Sidebar from "./Sidebar";
 import CustomEditComponent from "./CustomEditComponent";
 import Form from "./Form";
 import { detailedDiff } from "deep-object-diff";
-import Header from "./Header";
+import Header from "./NaviBar";
 // Update with the correct path
 
 // import Axios from "axios";
@@ -513,8 +513,6 @@ export default function Contacts({ cookie }: PropTypes) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <Sidebar />
-
       <Box
         component="main"
         sx={{

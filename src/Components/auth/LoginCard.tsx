@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import {
   authCreateAccountWithEmail,
   authSignInWithEmail,
-} from "../services/firebase/firebaseConfig";
+} from "../../services/firebase/firebaseConfig";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -18,7 +18,6 @@ import { Alert, AlertDescription } from "../ui/alert";
 
 export const LoginCard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
-
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 

@@ -11,7 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { Button } from "@/Components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 export default function UserNav() {

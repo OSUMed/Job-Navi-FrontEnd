@@ -1,6 +1,6 @@
 // Header.tsx
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,7 +10,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuViewport,
-} from "@/components/ui/navigation-menu";
+} from "@/Components/ui/navigation-menu";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { Link } from "react-router-dom";
 import {
@@ -23,13 +23,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@/Components/ui/alert-dialog";
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { TfiWrite } from "react-icons/ti";
 import classNames from "classnames";
 import { useLocation } from "react-router-dom";
 import { BsSendCheckFill } from "react-icons/bs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
+import UserNav from "./UserNav";
 
 const Header: React.FC = () => {
   //   const handleLogout = () => {
@@ -66,7 +68,6 @@ const Header: React.FC = () => {
             const isHighlighted =
               (link.href === "/applications" && location.pathname === "/") ||
               location.pathname === link.href;
-
             return (
               <Link
                 key={link.href}
@@ -83,12 +84,7 @@ const Header: React.FC = () => {
           })}
         </ul>
       </div>
-      <Button
-        onClick={logOut}
-        className="ml-4 px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition-colors"
-      >
-        <ExitToAppIcon /> Log Out
-      </Button>
+      <UserNav />
     </nav>
   );
 };

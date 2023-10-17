@@ -1,19 +1,18 @@
 import React from "react";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
-import Dashboard from "./components/Dashboard";
-import Contacts from "./components/Contacts";
-import Applications from "./components/Applications";
-import Notes from "./components/Notes";
+import Contacts from "./Components/Contacts";
+import Applications from "./Components/Applications";
+import Notes from "./Components/Notes";
 import "tailwindcss/tailwind.css";
 import { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { LoginCard } from "./components/auth/LoginCard";
-import { LogoutCard } from "./components/auth/LogoutCard";
-import Header from "./components/NaviBar";
+import { LoginCard } from "./Components/auth/LoginCard";
+import { LogoutCard } from "./Components/auth/LogoutCard";
+import Header from "./Components/NaviBar";
 import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
+import UserNav from "./Components/UserNav";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null); // To store the user object
@@ -48,6 +47,7 @@ const App: React.FC = () => {
               <Route path="notes" element={<Notes />} />
               <Route path="logout" element={<LogoutCard />} />
               <Route path="test" element={<Header />} />
+              <Route path="test2" element={<UserNav />} />
             </>
           ) : (
             // Render a login component or redirect to a login page

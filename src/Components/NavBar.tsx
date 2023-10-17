@@ -43,7 +43,7 @@ const Header: React.FC = () => {
       const auth = getAuth();
       await signOut(auth);
       navigate("/");
-      console.log("User signed out");
+      console.log("User has signed out");
     } catch (error) {
       console.error("Error signing out: ", error);
     }

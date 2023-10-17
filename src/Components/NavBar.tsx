@@ -30,12 +30,14 @@ import { TfiWrite } from "react-icons/ti";
 import classNames from "classnames";
 import { useLocation } from "react-router-dom";
 import { BsSendCheckFill } from "react-icons/bs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
+import UserNav from "./UserNav";
 
 const Header: React.FC = () => {
-  //   const handleLogout = () => {
-  //     console.log("Logging out...");
-  //     // Handle logout logic here...
-  //   };
+  // const handleLogout = () => {
+  // console.log("Logging out...");
+  // // Handle logout logic here...
+  // };
   const navigate = useNavigate();
   const location = useLocation();
   const logOut = async () => {
@@ -43,7 +45,7 @@ const Header: React.FC = () => {
       const auth = getAuth();
       await signOut(auth);
       navigate("/");
-      console.log("User has signed out");
+      console.log("User signed out");
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -66,7 +68,6 @@ const Header: React.FC = () => {
             const isHighlighted =
               (link.href === "/applications" && location.pathname === "/") ||
               location.pathname === link.href;
-
             return (
               <Link
                 key={link.href}
@@ -83,12 +84,7 @@ const Header: React.FC = () => {
           })}
         </ul>
       </div>
-      <Button
-        onClick={logOut}
-        className="ml-4 px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition-colors"
-      >
-        <ExitToAppIcon /> Log Out
-      </Button>
+      <UserNav />
     </nav>
   );
 };

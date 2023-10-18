@@ -113,10 +113,8 @@ export default function ContactsForm({ onSubmit, onChange }) {
 
   return (
     <>
-      <br />
       <h2 className="text-2xl font-semibold mb-4 text-center">Add Contact</h2>
       <form
-        ref={formRef}
         onSubmit={onSubmit}
         className="max-w-md mx-auto p-4 border border-gray-300 rounded"
       >

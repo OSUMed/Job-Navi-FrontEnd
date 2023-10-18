@@ -3,15 +3,11 @@ import Axios from "axios";
 import {
   TableContainer,
   Paper,
-  Dialog,
   Box,
-  DialogTitle,
   DialogActions,
   Container,
-  DialogContent,
   Typography,
   Grid,
-  Button,
   TextField,
   SxProps,
 } from "@mui/material";
@@ -29,14 +25,29 @@ import {
 } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
-import Sidebar from "./Sidebar";
-
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 // Reusable Component Imports:
 import CustomEditComponent from "./CustomEditComponent";
-import Form from "./Form";
 import { detailedDiff } from "deep-object-diff";
 import Header from "./NavBar";
 import ContactsForm from "./ContactsForm";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
+import { toast } from "@shadcn/ui/toast";
+import { Toaster } from "@/components/ui/toaster";
+
 // Update with the correct path
 
 // import Axios from "axios";
@@ -87,6 +98,8 @@ export default function Contacts({ cookie }: PropTypes) {
     notes: "",
     followUpDate: "",
   });
+  const [open, setOpen] = React.useState(false);
+  const { toast } = useToast();
   // const [pageSize, setPageSize] = React.useState<number>(20);
   // const [rowId, setRowId] = React.useState<number | null>();
   // const [editRowId, setEditRowId] = React.useState<number>(95);
@@ -202,17 +215,14 @@ export default function Contacts({ cookie }: PropTypes) {
         return (
           <>
             <Button
+              className="m-2"
               sx={{ mr: 1 }}
               onClick={() => setRowEdit(params.row.rowId)}
-              variant="contained"
             >
               Update
             </Button>
             <br />
-            <Button
-              onClick={() => handleDelete(params.row.rowId)}
-              variant="contained"
-            >
+            <Button onClick={() => handleDelete(params.row.rowId)}>
               Delete
             </Button>
           </>
@@ -317,6 +327,7 @@ export default function Contacts({ cookie }: PropTypes) {
       await Axios.post(`${hostURL}/contacts`, newContact);
       await fetchContacts();
       e.currentTarget.reset();
+      setOpen(false);
     } catch (error) {
       console.error("Error adding contact:", error);
     }
@@ -390,21 +401,16 @@ export default function Contacts({ cookie }: PropTypes) {
 
     // Default Case: render confirmation dialog:
     return (
-      <Dialog maxWidth="xs" open={confirmData}>
+      <Dialog open={confirmData}>
         <DialogTitle>Confirm Update</DialogTitle>
         <DialogContent>
-          <Typography variant="body1" gutterBottom>
+          <DialogTitle>
             You are about to update the following information:
-          </Typography>
+          </DialogTitle>
           {changedKeys.map((key) => (
             <div
               key={key}
-              style={{
-                backgroundColor: "#f8f8f8",
-                padding: "8px",
-                border: "1px solid #ccc",
-                marginBottom: "8px",
-              }}
+              className="bg-gray-100 p-2 border border-gray-300 mb-2"
             >
               <strong>{key}:</strong>{" "}
               {differences.updated[key as keyof typeof differences.updated]}
@@ -413,15 +419,22 @@ export default function Contacts({ cookie }: PropTypes) {
           <Typography variant="body1" gutterBottom style={{ marginTop: "1em" }}>
             Are you sure you want to proceed?
           </Typography>
+          <div className="flex justify-end">
+            <Button
+              onClick={() => handleDataChangeDialog("No")}
+              color="primary"
+              className="mr-2"
+            >
+              No
+            </Button>
+            <Button
+              onClick={() => handleDataChangeDialog("Yes")}
+              color="primary"
+            >
+              Yes
+            </Button>
+          </div>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleDataChangeDialog("No")} color="primary">
-            No
-          </Button>
-          <Button onClick={() => handleDataChangeDialog("Yes")} color="primary">
-            Yes
-          </Button>
-        </DialogActions>
       </Dialog>
     );
   };
@@ -451,7 +464,9 @@ export default function Contacts({ cookie }: PropTypes) {
     try {
       await Axios.post(`${hostURL}/contacts/${contactId}/delete`);
       await fetchContacts();
-      alert("Contact deleted!");
+      toast({
+        description: "Contact deleted!",
+      });
     } catch (error) {
       console.error("Error deleting contact:", error);
     }
@@ -531,61 +546,67 @@ export default function Contacts({ cookie }: PropTypes) {
   ];
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Box
-        component="main"
-        sx={{
-          backgroundColor: "#F5F5F5",
-          flexGrow: 1,
-          overflow: "auto",
-        }}
-      >
-        <Header />
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Grid item xs={12} md={8} lg={9}>
-            <Paper
-              sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <React.Fragment>
-                <h2>Contacts</h2>
-                <TableContainer component={Paper}>
-                  <Paper sx={dataGridStyles}>
-                    {renderConfirmDialog()}
-                    <DataGrid
-                      columns={columns}
-                      rows={allContacts}
-                      getRowHeight={() => "auto"}
-                      getRowId={(row) => row.rowId}
-                      editMode="row"
-                      processRowUpdate={processRowUpdate}
-                      onProcessRowUpdateError={handleProcessRowUpdateError}
-                      rowModesModel={rowModesModel}
-                      slots={{
-                        toolbar: GridToolbar,
-                      }}
-                    />
-                  </Paper>
-                  {/* <Form
-                    formName={"Add Contact"}
-                    fields={fields}
-                    onSubmit={handleAddContactFormSubmit}
-                    onChange={handleChangeAddContact}
-                  /> */}
-                  <ContactsForm
-                    formRef={formRef}
-                    onSubmit={handleAddContactFormSubmit}
-                    onChange={handleChangeAddContact}
-                  />
-                </TableContainer>
-              </React.Fragment>
+    <Box className="bg-gray-100 min-h-screen">
+      <Header />
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Paper
+          sx={{
+            p: 2,
+          }}
+        >
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button
+                className="mb-2 border-2 z-10"
+                onClick={() => setOpen(true)}
+              >
+                Add Contact
+              </Button>
+              {/* <Button
+                variant="outline"
+                className="text-blue-600 border-blue-600 mb-2 border-2 z-10"
+              >
+                Add Contact
+              </Button> */}
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add Contact</DialogTitle>
+                <DialogDescription>
+                  Add New Contact and Press Enter
+                </DialogDescription>
+              </DialogHeader>
+              <ContactsForm
+                onSubmit={handleAddContactFormSubmit}
+                onChange={handleChangeAddContact}
+                setOpen={setOpen}
+                addContact={addContact}
+                fetchContacts={fetchContacts}
+              />
+            </DialogContent>
+          </Dialog>
+          <TableContainer component={Paper}>
+            <Paper sx={dataGridStyles}>
+              {renderConfirmDialog()}
+              <DataGrid
+                columns={columns}
+                rows={allContacts}
+                getRowHeight={() => "auto"}
+                getRowId={(row) => row.rowId}
+                editMode="row"
+                processRowUpdate={processRowUpdate}
+                onProcessRowUpdateError={handleProcessRowUpdateError}
+                rowModesModel={rowModesModel}
+                slots={{
+                  toolbar: GridToolbar,
+                }}
+              />
             </Paper>
-          </Grid>
-        </Container>
-      </Box>
+          </TableContainer>
+        </Paper>
+      </Container>
+
+      <Toaster />
     </Box>
   );
 }

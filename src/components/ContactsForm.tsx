@@ -17,27 +17,71 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import * as ScrollArea from "@radix-ui/react-scroll-area";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Axios from "axios";
+import { randomId } from "@mui/x-data-grid-generator";
+// import Axios from "axios";
+// const hostURL = "http://localhost:8080";
+// const hostURL = "https://jobtrackerbackend.up.railway.app/";
+const hostURL =
+  "https://cors-anywhere-osu.up.railway.app/https://jobtrackerbackend.up.railway.app/api";
 
-export default function ContactsForm({ onSubmit, onChange }) {
-  const [isCompanyInfoOpen, setIsCompanyInfoOpen] = React.useState(false);
+export default function ContactsForm({
+  onSubmit,
+  onChange,
+  setOpen,
+  addContact,
+  fetchContacts,
+}) {
+  const [isCompanyInfoOpen, setIsCompanyInfoOpen] = React.useState(true);
   const [isContactDetailsOpen, setIsContactDetailsOpen] = React.useState(false);
   const [isAdditionalNotesOpen, setIsAdditionalNotesOpen] =
     React.useState(false);
 
-  const form = useForm({
-    defaultValues: {
-      companyName: "",
-      fullName: "",
-      title: "",
-      relationship: "",
-      email: "",
-      phone: "",
-      notes: "",
-      followUpDate: "",
-    },
-  });
+  // const handleCloseNow = () => {
+  //   setOpen(false);
+  // };
+  const handleCloseNow = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("new contact is: ", addContact);
+    const newContact = {
+      contactId: randomId(),
+      companyName: addContact.companyName,
+      fullName: addContact.fullName,
+      title: addContact.title,
+      email: addContact.email,
+      phone: addContact.phone,
+      relationship: addContact.relationship,
+      notes: addContact.notes,
+      followUpDate: addContact.followUpDate,
+    };
+
+    let response;
+    try {
+      response = await Axios.post(`${hostURL}/contacts`, newContact);
+      await fetchContacts();
+      e.currentTarget.reset();
+    } catch (error) {
+      console.error("Error adding contact:", error);
+    }
+    if (response && response.status === 200) {
+      setOpen(false);
+    }
+  };
   const fieldGroups = [
     {
       groupName: "Company Information",
@@ -113,66 +157,68 @@ export default function ContactsForm({ onSubmit, onChange }) {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold mb-4 text-center">Add Contact</h2>
-      <form
-        onSubmit={onSubmit}
-        className="max-w-md mx-auto p-4 border border-gray-300 rounded"
-      >
-        {fieldGroups.map((group, idx) => (
-          <Collapsible
-            key={idx}
-            open={
-              idx === 0
-                ? isCompanyInfoOpen
-                : idx === 1
-                ? isContactDetailsOpen
-                : isAdditionalNotesOpen
-            }
-            onOpenChange={
-              idx === 0
-                ? setIsCompanyInfoOpen
-                : idx === 1
-                ? setIsContactDetailsOpen
-                : setIsAdditionalNotesOpen
-            }
-            className="w-[350px] space-y-2"
-          >
-            <div className="flex items-center justify-between space-x-4 px-4 ">
-              <h4 className="text-sm font-semibold">{group.groupName}</h4>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <CaretSortIcon className="h-4 w-4" />
-                </Button>
-              </CollapsibleTrigger>
-            </div>
-            <CollapsibleContent className="space-y-2">
-              {group.fields.map((field, fieldIdx) => (
-                <div
-                  key={fieldIdx}
-                  className="flex flex-col peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  <label
-                    className={"text-sm font-medium "}
+      <form onSubmit={handleCloseNow}>
+        <div className="max-h-[450px] overflow-y-auto">
+          {fieldGroups.map((group, idx) => (
+            <Collapsible
+              key={idx}
+              open={
+                idx === 0
+                  ? isCompanyInfoOpen
+                  : idx === 1
+                  ? isContactDetailsOpen
+                  : isAdditionalNotesOpen
+              }
+              onOpenChange={
+                idx === 0
+                  ? setIsCompanyInfoOpen
+                  : idx === 1
+                  ? setIsContactDetailsOpen
+                  : setIsAdditionalNotesOpen
+              }
+              className="w-[350px] space-y-2"
+            >
+              <div className="flex items-center justify-start border-b-2 border-black-900 p-2">
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {group.groupName}
+                </h3>
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <CaretSortIcon className="h-4 w-4" />
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+
+              <CollapsibleContent className="space-y-2">
+                {group.fields.map((field, fieldIdx) => (
+                  <div
+                    className="text-gray-700 font-medium"
                     htmlFor={field.name}
                   >
-                    {field.label}:
-                  </label>
-                  <Input
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                    type={field.type}
-                    name={field.name}
-                    placeholder={field.placeholder}
-                    required={field.required}
-                    onChange={onChange}
-                  />
-                </div>
-              ))}
-            </CollapsibleContent>
-          </Collapsible>
-        ))}
-        <div className="mt-5">
-          <Button type="submit">Add Contact</Button>
+                    <Label className="text-middle" htmlFor={field.name}>
+                      {field.label}:
+                    </Label>
+                    <Input
+                      className="col-span-3"
+                      type={field.type}
+                      name={field.name}
+                      placeholder={field.placeholder}
+                      required={field.required}
+                      onChange={onChange}
+                    />
+                    <br />
+                  </div>
+                ))}
+              </CollapsibleContent>
+            </Collapsible>
+          ))}
+          <br />
+          <br />
         </div>
+
+        <Button type="submit">Add Contact</Button>
+
+        {/* <Button onClick={handleCloseNow}>Close Add Contact Dialog</Button> */}
       </form>
     </>
   );

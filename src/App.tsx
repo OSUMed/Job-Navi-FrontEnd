@@ -11,6 +11,8 @@ import { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { LoginCard } from "./Components/auth/LoginCard";
 import { LogoutCard } from "./Components/auth/LogoutCard";
+import { Collapsible } from "./components/ui/collapsible";
+import ContactsForm from "./components/ContactsForm";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null); // To store the user object
@@ -43,6 +45,7 @@ const App: React.FC = () => {
             <Route path="applications" element={<Applications />} />
             <Route path="notes" element={<Notes />} />
             <Route path="logout" element={<LogoutCard />} />
+            <Route path="test" element={<ContactsForm />} />
           </>
         ) : (
           // Render a login component or redirect to a login page

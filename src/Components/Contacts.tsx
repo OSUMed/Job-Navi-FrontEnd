@@ -36,6 +36,7 @@ import CustomEditComponent from "./CustomEditComponent";
 import Form from "./Form";
 import { detailedDiff } from "deep-object-diff";
 import Header from "./NavBar";
+import ContactsForm from "./ContactsForm";
 // Update with the correct path
 
 // import Axios from "axios";
@@ -93,7 +94,11 @@ export default function Contacts({ cookie }: PropTypes) {
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
+  const formRef = React.useRef(null);
 
+  function resetForm() {
+    formRef.current.reset();
+  }
   const columns: GridColDef[] = [
     {
       field: "companyName",
@@ -281,6 +286,7 @@ export default function Contacts({ cookie }: PropTypes) {
 
   const handleChangeAddContact = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+    console.log("new contact change is: ", addContact);
     // Store name attribute value and cell value as new field entry:
     const inputField = e.target.getAttribute("name");
     const inputValue = e.target.value;
@@ -295,7 +301,7 @@ export default function Contacts({ cookie }: PropTypes) {
     e: React.SyntheticEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
-
+    console.log("new contact is: ", addContact);
     const newContact = {
       contactId: randomId(),
       companyName: addContact.companyName,
@@ -310,6 +316,7 @@ export default function Contacts({ cookie }: PropTypes) {
     try {
       await Axios.post(`${hostURL}/contacts`, newContact);
       await fetchContacts();
+      e.currentTarget.reset();
     } catch (error) {
       console.error("Error adding contact:", error);
     }
@@ -562,10 +569,14 @@ export default function Contacts({ cookie }: PropTypes) {
                       }}
                     />
                   </Paper>
-                  <h2>Add a Contact</h2>
-                  <Form
+                  {/* <Form
                     formName={"Add Contact"}
                     fields={fields}
+                    onSubmit={handleAddContactFormSubmit}
+                    onChange={handleChangeAddContact}
+                  /> */}
+                  <ContactsForm
+                    formRef={formRef}
                     onSubmit={handleAddContactFormSubmit}
                     onChange={handleChangeAddContact}
                   />

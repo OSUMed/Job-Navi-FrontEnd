@@ -1,15 +1,13 @@
 import * as React from "react";
+import Axios from "axios";
 import {
+  TableContainer,
   Paper,
-  Dialog,
   Box,
-  DialogTitle,
   DialogActions,
   Container,
-  Grid,
   Typography,
-  DialogContent,
-  Button,
+  Grid,
   TextField,
   SxProps,
 } from "@mui/material";
@@ -27,14 +25,28 @@ import {
 } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
-
-import Sidebar from "./Sidebar";
-import Axios from "axios";
-import { detailedDiff } from "deep-object-diff";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 // Reusable Component Imports:
-import CustomEditComponent from "./CustomEditComponent"; // Update with the correct path
-import Form from "./Form";
+import CustomEditComponent from "./CustomEditComponent";
+import { detailedDiff } from "deep-object-diff";
 import Header from "./NavBar";
+import ContactsForm from "./ContactsForm";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
+import { toast } from "@shadcn/ui/toast";
+import { Toaster } from "@/components/ui/toaster";
 // interface PropTypes {
 //   cookie: {
 //     session: string;
@@ -66,9 +78,11 @@ const CustomDisabledTextField = styled(TextField)(() => ({
 }));
 
 export default function Applications() {
-  const [allJobs, setAllJobs] = React.useState<GridRowsProp>([]);
+  const [allApplications, setAllApplications] = React.useState<GridRowsProp>(
+    []
+  );
   const [confirmData, setConfirmData] = React.useState<any>(null);
-  const [addJob, setAddJob] = React.useState<any>({
+  const [addApplication, setaddApplication] = React.useState<any>({
     rowId: "",
     jobTitle: "",
     dateCreated: "",
@@ -83,7 +97,8 @@ export default function Applications() {
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
-
+  const [open, setOpen] = React.useState(false);
+  const { toast } = useToast();
   const columns: GridColDef[] = [
     {
       field: "jobTitle",
@@ -321,10 +336,10 @@ export default function Applications() {
   //   //     Authorization: `Bearer ${store.session}`,
   //   //   },
   //   // }).then((response) => {
-  //   //   setAllJobs(response.data);
+  //   //   setAllApplications(response.data);
   //   //   setLoading(false);
   //   // });
-  //   setAllJobs(tableData);
+  //   setAllApplications(tableData);
   //   setLoading(false);
   // }, []);
 
@@ -347,7 +362,7 @@ export default function Applications() {
           dateApplied: job.dateApplied,
         }));
         console.log("response data: ", response.data);
-        setAllJobs(transformedJobs);
+        setAllApplications(transformedJobs);
       })
       .catch((error) => {
         console.error("Error fetching jobs: ", error);
@@ -359,32 +374,32 @@ export default function Applications() {
 
   /*------------------------------------Create/Add Row Logic------------------------------------*/
 
-  const handleChangeAddJob = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeApplication = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     // Store name attribute value and cell value as new field entry:
     const inputField = e.target.getAttribute("name");
     const inputValue = e.target.value;
-    const newJob = { ...addJob };
+    const newJob = { ...addApplication };
     // Typescript typing error workaround:
     // https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
     newJob[inputField as keyof typeof newJob] = inputValue;
-    setAddJob(newJob);
+    setaddApplication(newJob);
   };
 
-  // const handleAddJobFormSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+  // const handleaddApplicationFormSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
   //   e.preventDefault();
 
   //   const newJob = {
   //     jobId: randomId(),
-  //     jobTitle: addJob.jobTitle,
-  //     dateCreated: addJob.dateCreated,
-  //     priority: addJob.priority,
-  //     status: addJob.status,
-  //     location: addJob.location,
-  //     notes: addJob.notes,
-  //     company: addJob.company,
-  //     dateApplied: addJob.dateApplied,
-  //     salary: addJob.salary,
+  //     jobTitle: addApplication.jobTitle,
+  //     dateCreated: addApplication.dateCreated,
+  //     priority: addApplication.priority,
+  //     status: addApplication.status,
+  //     location: addApplication.location,
+  //     notes: addApplication.notes,
+  //     company: addApplication.company,
+  //     dateApplied: addApplication.dateApplied,
+  //     salary: addApplication.salary,
   //   };
   //   // Axios.post(`${baseURL}/jobs`, newJob, {
   //   //   headers: {
@@ -398,34 +413,34 @@ export default function Applications() {
   //   //     Authorization: `Bearer ${store.session}`,
   //   //   },
   //   // }).then((response) => {
-  //   //   setAllJobs(response.data);
+  //   //   setAllApplications(response.data);
   //   //   // console.log("2nd localhost res is: ", response.data);
   //   // });
   //   // // console.log("add job: ", newJob);
-  //   setAllJobs([...allJobs, newJob]);
+  //   setAllApplications([...allJobs, newJob]);
   // };
 
-  const handleAddJobFormSubmit = async (
+  const handleAddApplicationFormSubmit = async (
     e: React.SyntheticEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
 
     const newJob = {
       rowId: randomId(),
-      jobTitle: addJob.jobTitle,
-      dateCreated: addJob.dateCreated,
-      priority: addJob.priority,
-      status: addJob.status,
-      salary: addJob.salary,
-      location: addJob.location,
-      notes: addJob.notes,
-      company: addJob.company,
-      dateApplied: addJob.dateApplied,
+      jobTitle: addApplication.jobTitle,
+      dateCreated: addApplication.dateCreated,
+      priority: addApplication.priority,
+      status: addApplication.status,
+      salary: addApplication.salary,
+      location: addApplication.location,
+      notes: addApplication.notes,
+      company: addApplication.company,
+      dateApplied: addApplication.dateApplied,
     };
 
     try {
       await Axios.post(`${hostURL}/applications`, newJob);
-      setAllJobs([...allJobs, newJob]);
+      setAllApplications([...allJobs, newJob]);
     } catch (error) {
       console.error("Error adding job application:", error);
     }
@@ -555,7 +570,7 @@ export default function Applications() {
         company: application.company,
         dateApplied: application.dateApplied,
       }));
-      setAllJobs(transformedApplications);
+      setAllApplications(transformedApplications);
     } catch (error) {
       console.error("Error fetching applications:", error);
     }
@@ -651,54 +666,67 @@ export default function Applications() {
     },
   ];
   return (
-    <Box sx={{ display: "flex" }}>
-      <Box
-        component="main"
-        sx={{
-          backgroundColor: "#F5F5F5",
-          flexGrow: 1, // Let the main content area grow to fill available space
-          overflow: "auto", //content overflows its container -> scrollbars appear
-        }}
-      >
-        <Header />
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Grid item xs={12} md={8} lg={9}>
-            <Paper
-              sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-              }}
+    <Box className="bg-gray-100 min-h-screen">
+      <Header />
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Paper
+          sx={{
+            p: 2,
+          }}
+        >
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button
+                className="mb-2 border-2 z-10"
+                onClick={() => setOpen(true)}
+              >
+                Add Application
+              </Button>
+              {/* <Button
+              variant="outline"
+              className="text-blue-600 border-blue-600 mb-2 border-2 z-10"
             >
-              <h2>Applications</h2>
-              <Paper sx={dataGridStyles}>
-                {renderConfirmDialog()}
-                <DataGrid
-                  columns={columns}
-                  rows={allJobs}
-                  getRowHeight={() => "auto"}
-                  getRowId={(row) => row.rowId}
-                  autoPageSize={true}
-                  editMode="row"
-                  processRowUpdate={processRowUpdate}
-                  onProcessRowUpdateError={handleProcessRowUpdateError}
-                  rowModesModel={rowModesModel}
-                  slots={{
-                    toolbar: GridToolbar,
-                  }}
-                />
-              </Paper>
-              <h2>Add a Job</h2>
-              <Form
-                formName={"Add Job"}
-                fields={fields}
-                onSubmit={handleAddJobFormSubmit}
-                onChange={handleChangeAddJob}
+              Add Contact
+            </Button> */}
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add Application</DialogTitle>
+                <DialogDescription>
+                  Add New Application and Press Enter
+                </DialogDescription>
+              </DialogHeader>
+              <ContactsForm
+                onSubmit={handleAddApplicationFormSubmit}
+                onChange={handleChangeApplication}
+                setOpen={setOpen}
+                addApplication={addApplication}
+                fetchApplications={fetchApplications}
+              />
+            </DialogContent>
+          </Dialog>
+          <TableContainer component={Paper}>
+            <Paper sx={dataGridStyles}>
+              {renderConfirmDialog()}
+              <DataGrid
+                columns={columns}
+                rows={allApplications}
+                getRowHeight={() => "auto"}
+                getRowId={(row) => row.rowId}
+                editMode="row"
+                processRowUpdate={processRowUpdate}
+                onProcessRowUpdateError={handleProcessRowUpdateError}
+                rowModesModel={rowModesModel}
+                slots={{
+                  toolbar: GridToolbar,
+                }}
               />
             </Paper>
-          </Grid>
-        </Container>
-      </Box>
+          </TableContainer>
+        </Paper>
+      </Container>
+
+      <Toaster />
     </Box>
   );
 }

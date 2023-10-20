@@ -261,14 +261,14 @@ export default function Applications() {
           return (
             <>
               <Button
-                className="bg-green-600 m-4"
+                className="bg-green-600 hover:bg-green-700 m-4"
                 onClick={() => setRowSave(params.row.rowId)}
               >
                 Save
               </Button>
 
               <Button
-                className="bg-gray-400"
+                className="bg-gray-400 hover:bg-gray-500"
                 onClick={() => setRowCancel(params.row.rowId)}
               >
                 Cancel
@@ -291,30 +291,6 @@ export default function Applications() {
             >
               Delete
             </Button>
-          </>
-        );
-      },
-      renderEditCell: (params) => {
-        console.log("Edit Cell Params:", params); // Add this line
-        // const isInEditMode =
-        //   rowModesModel[params.id]?.mode === GridRowModes.Edit;
-        // console.log("what is isInEditMode: ", isInEditMode);
-        // if (isInEditMode) {
-        return (
-          <>
-            <Button
-              onClick={() => setRowSave(params.row.jobId)}
-              variant="contained"
-            >
-              Save
-            </Button>
-            <br />
-            <GridActionsCellItem
-              onClick={() => setRowCancel(params.row.jobId)}
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-            />
           </>
         );
       },
@@ -389,7 +365,7 @@ export default function Applications() {
     }
   };
 
-  /*------------------------------------C hange Table Views ------------------------------------*/
+  /*------------------------------------ Change Table Views(not update) ------------------------------------*/
 
   const setRowEdit = (id: GridRowId) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -409,8 +385,6 @@ export default function Applications() {
   /*------------------------------------Update/Edit Cell Dialog Logic------------------------------------*/
 
   // Editable Cells: new data saved in confirmData
-  // the datagrid API option that I enabled saves the "current row" and "the row before it was edited" so we can access
-  // them and pick which one to render based on user confirmation:
   const processRowUpdate = React.useCallback(
     (newRow: GridRowModel, oldRow: GridRowModel) =>
       new Promise<GridRowModel>((resolve, reject) => {

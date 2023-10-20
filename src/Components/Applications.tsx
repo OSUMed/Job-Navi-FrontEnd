@@ -324,59 +324,34 @@ export default function Applications() {
     height: 500,
   };
 
-  // function preventDefault(event: React.MouseEvent) {
-  //   event.preventDefault();
-  // }
-
-  // React.useEffect(() => {
-  //   setLoading(true);
-  //   // console.log("Hello from JobsTable");
-  //   // Grab data from backend on page load:
-  //   // setLoading(true);
-  //   // Axios.get(`${baseURL}/jobs`, {
-  //   //   headers: {
-  //   //     // Formatted as "Bearer 248743843", where 248743843 is our session key:
-  //   //     Authorization: `Bearer ${store.session}`,
-  //   //   },
-  //   // }).then((response) => {
-  //   //   setAllApplications(response.data);
-  //   //   setLoading(false);
-  //   // });
-  //   setAllApplications(tableData);
-  //   setLoading(false);
-  // }, []);
-
   React.useEffect(() => {
-    // setLoading(true);
-
-    Axios.get(`${hostURL}/applications`) // Replace "/applications" with the appropriate API endpoint
-      .then((response) => {
-        console.log("Connected toL ", `${hostURL}/applications`);
-        const transformedJobs = response.data.map((job: Job) => ({
-          rowId: job.rowId,
-          jobTitle: job.jobTitle,
-          dateCreated: job.dateCreated,
-          priority: job.priority,
-          status: job.status,
-          salary: job.salary,
-          location: job.location,
-          notes: job.notes,
-          company: job.company,
-          dateApplied: job.dateApplied,
-        }));
-        console.log("response data: ", response.data);
-        setAllApplications(transformedJobs);
-      })
-      .catch((error) => {
-        console.error("Error fetching jobs: ", error);
-      })
-      .finally(() => {
-        // setLoading(false);
-      });
+    fetchApplications();
   }, []);
+
+  const fetchApplications = async () => {
+    try {
+      const response = await Axios.get(`${hostURL}/applications`);
+      const transformedApplications = response.data.map((application: Job) => ({
+        rowId: application.rowId,
+        jobTitle: application.jobTitle,
+        dateCreated: application.dateCreated,
+        priority: application.priority,
+        status: application.status,
+        salary: application.salary,
+        location: application.location,
+        notes: application.notes,
+        company: application.company,
+        dateApplied: application.dateApplied,
+      }));
+      setAllApplications(transformedApplications);
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+    }
+  };
 
   /*------------------------------------Create/Add Row Logic------------------------------------*/
 
+  // Streamline this method:
   const handleChangeApplication = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     // Store name attribute value and cell value as new field entry:
@@ -387,6 +362,36 @@ export default function Applications() {
     // https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
     newJob[inputField as keyof typeof newJob] = inputValue;
     setaddApplication(newJob);
+  };
+
+  const handleSubmitApplication = async (
+    e: React.SyntheticEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    const newApplication = {
+      applicationId: randomId(),
+      jobTitle: addApplication.jobTitle,
+      company: addApplication.company,
+      location: addApplication.location,
+      status: addApplication.status,
+      priority: addApplication.priority,
+      dateApplied: addApplication.dateApplied,
+      dateAdded: addApplication.dateAdded,
+      salary: addApplication.salary,
+      notes: addApplication.notes,
+    };
+
+    let response;
+    try {
+      response = await Axios.post(`${hostURL}/applications`, newApplication);
+      await fetchApplications();
+      e.currentTarget.reset();
+    } catch (error) {
+      console.error("Error adding application:", error);
+    }
+    if (response && response.status === 200) {
+      setOpen(false);
+    }
   };
 
   // const handleaddApplicationFormSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
@@ -422,32 +427,6 @@ export default function Applications() {
   //   // // console.log("add job: ", newJob);
   //   setAllApplications([...allJobs, newJob]);
   // };
-
-  const handleAddApplicationFormSubmit = async (
-    e: React.SyntheticEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault();
-
-    const newJob = {
-      rowId: randomId(),
-      jobTitle: addApplication.jobTitle,
-      dateCreated: addApplication.dateCreated,
-      priority: addApplication.priority,
-      status: addApplication.status,
-      salary: addApplication.salary,
-      location: addApplication.location,
-      notes: addApplication.notes,
-      company: addApplication.company,
-      dateApplied: addApplication.dateApplied,
-    };
-
-    try {
-      await Axios.post(`${hostURL}/applications`, newJob);
-      setAllApplications([...allJobs, newJob]);
-    } catch (error) {
-      console.error("Error adding job application:", error);
-    }
-  };
 
   /*------------------------------------Update/Edit Cell Dialog Logic------------------------------------*/
 
@@ -490,6 +469,9 @@ export default function Applications() {
         console.log("updJob is: ", updJob);
         await Axios.post(`${hostURL}/applications/${newRow.rowId}`, updJob);
         resolve(newRow);
+        toast({
+          description: "Contact Updated!",
+        });
       } catch (error) {
         console.error("Error updating Job:", error);
       }
@@ -571,27 +553,6 @@ export default function Applications() {
 
   /*------------------------------------Delete Row Logic------------------------------------*/
 
-  const fetchApplications = async () => {
-    try {
-      const response = await Axios.get(`${hostURL}/applications`);
-      const transformedApplications = response.data.map((application: Job) => ({
-        rowId: application.rowId,
-        jobTitle: application.jobTitle,
-        dateCreated: application.dateCreated,
-        priority: application.priority,
-        status: application.status,
-        salary: application.salary,
-        location: application.location,
-        notes: application.notes,
-        company: application.company,
-        dateApplied: application.dateApplied,
-      }));
-      setAllApplications(transformedApplications);
-    } catch (error) {
-      console.error("Error fetching applications:", error);
-    }
-  };
-
   const handleDelete = async (applicationId: string) => {
     try {
       await Axios.post(`${hostURL}/applications/${applicationId}/delete`);
@@ -619,70 +580,7 @@ export default function Applications() {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
   };
-  const fields = [
-    {
-      label: "Job Title",
-      name: "jobTitle",
-      type: "text",
-      required: true,
-      placeholder: "Enter a job name..",
-    },
-    {
-      label: "Date Created",
-      name: "dateCreated",
-      type: "date",
-      required: true,
-      placeholder: "Enter location..",
-    },
-    {
-      label: "Priority",
-      name: "priority",
-      type: "text",
-      placeholder: "Enter priority..",
-    },
-    {
-      label: "Status",
-      name: "status",
-      type: "text",
-      required: true,
-      placeholder: "Enter status..",
-    },
-    {
-      label: "Salary",
-      name: "salary",
-      type: "text",
-      required: true,
-      placeholder: "Enter salary..",
-    },
-    {
-      label: "Location",
-      name: "location",
-      type: "text",
-      required: true,
-      placeholder: "Enter location..",
-    },
-    {
-      label: "Notes",
-      name: "notes",
-      type: "text",
-      required: true,
-      placeholder: "Enter notes..",
-    },
-    {
-      label: "Company",
-      name: "company",
-      type: "text",
-      required: true,
-      placeholder: "Enter a company name..",
-    },
-    {
-      label: "Date Applied",
-      name: "dateApplied",
-      type: "date",
-      required: true,
-      placeholder: "Enter a date applied..",
-    },
-  ];
+
   return (
     <Box className="bg-gray-100 min-h-screen">
       <Header />
@@ -700,12 +598,6 @@ export default function Applications() {
               >
                 <AddIcon /> Add Application
               </Button>
-              {/* <Button
-              variant="outline"
-              className="text-blue-600 border-blue-600 mb-2 border-2 z-10"
-            >
-              Add Contact
-            </Button> */}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
@@ -715,11 +607,8 @@ export default function Applications() {
                 </DialogDescription>
               </DialogHeader>
               <ApplicationsForm
-                onSubmit={handleAddApplicationFormSubmit}
+                onSubmit={handleSubmitApplication}
                 onChange={handleChangeApplication}
-                setOpen={setOpen}
-                addApplication={addApplication}
-                fetchApplications={fetchApplications}
               />
             </DialogContent>
           </Dialog>

@@ -47,50 +47,13 @@ import { randomId } from "@mui/x-data-grid-generator";
 const hostURL =
   "https://cors-anywhere-osu.up.railway.app/https://jobtrackerbackend.up.railway.app/api";
 
-export default function ApplicationsForm({
-  onSubmit,
-  onChange,
-  setOpen,
-  addApplication,
-  fetchApplications,
-}) {
+export default function ApplicationsForm({ onSubmit, onChange }) {
   const [isEssentialInfoOpen, setIsEssentialInfoOpen] = React.useState(true);
   const [isApplicationTimelineOpen, setIsApplicationTimelineOpen] =
     React.useState(false);
   const [isJobDetailsOpen, setIsJobDetailsOpen] = React.useState(false);
   const [isApplicationNotesOpen, setIsApplicationNotesOpen] =
     React.useState(false);
-
-  // const handleCloseNow = () => {
-  //   setOpen(false);
-  // };
-  const handleCloseNow = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const newApplication = {
-      applicationId: randomId(),
-      jobTitle: addApplication.jobTitle,
-      company: addApplication.company,
-      location: addApplication.location,
-      status: addApplication.status,
-      priority: addApplication.priority,
-      dateApplied: addApplication.dateApplied,
-      dateAdded: addApplication.dateAdded,
-      salary: addApplication.salary,
-      notes: addApplication.notes,
-    };
-
-    let response;
-    try {
-      response = await Axios.post(`${hostURL}/applications`, newApplication);
-      await fetchApplications();
-      e.currentTarget.reset();
-    } catch (error) {
-      console.error("Error adding application:", error);
-    }
-    if (response && response.status === 200) {
-      setOpen(false);
-    }
-  };
 
   const fieldGroups = [
     {
@@ -175,7 +138,7 @@ export default function ApplicationsForm({
 
   return (
     <>
-      <form onSubmit={handleCloseNow}>
+      <form onSubmit={onSubmit}>
         <div className="max-h-[450px] overflow-y-auto p-2">
           {fieldGroups.map((group, idx) => (
             <Collapsible
@@ -211,15 +174,8 @@ export default function ApplicationsForm({
                 </CollapsibleTrigger>
               </div>
               <CollapsibleContent className="space-y-1">
-                {group.fields.map((field, fieldIdx) => (
-                  <div
-                    className="text-gray-700 font-medium p-1"
-                    htmlFor={field.name}
-                    // className={classnames("text-gray-700 font-medium", {
-                    //   "flex space-x-2":
-                    //     field.name === "priority" || field.name === "status",
-                    // })}
-                  >
+                {group.fields.map((field) => (
+                  <div className="text-gray-700 font-medium p-1">
                     {field.label !== "optional" ? (
                       <Label className="text-middle" htmlFor={field.name}>
                         {field.label}:
@@ -292,8 +248,6 @@ export default function ApplicationsForm({
         </div>
 
         <Button type="submit">Add Application</Button>
-
-        {/* <Button onClick={handleCloseNow}>Close Add Contact Dialog</Button> */}
       </form>
     </>
   );

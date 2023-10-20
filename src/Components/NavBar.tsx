@@ -12,6 +12,13 @@ import {
   NavigationMenuViewport,
 } from "@/Components/ui/navigation-menu";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "@/components/theme-provider";
 import { Link } from "react-router-dom";
 import {
   AlertDialog,
@@ -32,6 +39,7 @@ import { useLocation } from "react-router-dom";
 import { BsSendCheckFill } from "react-icons/bs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import UserNav from "./UserNav";
+import { ModeToggle } from "./mode-toggle";
 
 const Header: React.FC = () => {
   // const handleLogout = () => {

@@ -14,6 +14,7 @@ import { Button } from "@/Components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { ModeToggle } from "./mode-toggle";
 export default function UserNav() {
   const navigate = useNavigate();
 
@@ -59,6 +60,10 @@ export default function UserNav() {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             Profile
+            {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <ModeToggle />
             {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
           </DropdownMenuItem>
         </DropdownMenuGroup>

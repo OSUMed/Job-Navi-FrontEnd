@@ -47,6 +47,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { toast } from "@shadcn/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
+import AddIcon from "./ui/AddIcon";
 
 // Update with the correct path
 
@@ -197,15 +198,15 @@ export default function Contacts({ cookie }: PropTypes) {
           return (
             <>
               <Button
+                className="bg-green-600 m-4"
                 onClick={() => setRowSave(params.row.rowId)}
-                variant="contained"
               >
                 Save
               </Button>
               <pre> </pre>
               <Button
+                className="bg-gray-400"
                 onClick={() => setRowCancel(params.row.rowId)}
-                variant="contained"
               >
                 Cancel
               </Button>
@@ -237,10 +238,7 @@ export default function Contacts({ cookie }: PropTypes) {
         // if (isInEditMode) {
         return (
           <>
-            <Button
-              onClick={() => setRowSave(params.row.contactId)}
-              variant="contained"
-            >
+            <Button onClick={() => setRowSave(params.row.contactId)}>
               Save
             </Button>
             <br />
@@ -424,16 +422,15 @@ export default function Contacts({ cookie }: PropTypes) {
           <div className="flex justify-end">
             <Button
               onClick={() => handleDataChangeDialog("No")}
-              color="primary"
-              className="mr-2"
+              className="bg-gray-400 hover:bg-gray-500 text-gray-800 mr-2"
             >
-              No
+              Discard Changes
             </Button>
             <Button
               onClick={() => handleDataChangeDialog("Yes")}
-              color="primary"
+              className="bg-green-500 hover:bg-green-600 text-white"
             >
-              Yes
+              Save Changes
             </Button>
           </div>
         </DialogContent>
@@ -559,10 +556,10 @@ export default function Contacts({ cookie }: PropTypes) {
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button
-                className="mb-2 border-2 z-10"
+                className="mb-2 border bg-white border-purple-500 text-purple-500 hover:bg-purple-100 hover:text-purple-600 px-4 py-2 rounded transition duration-200 ease-in"
                 onClick={() => setOpen(true)}
               >
-                Add Contact
+                <AddIcon /> Add Contact
               </Button>
               {/* <Button
                 variant="outline"

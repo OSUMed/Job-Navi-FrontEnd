@@ -7,6 +7,16 @@ import {
   DialogActions,
   Button,
 } from "@material-ui/core";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface ConfirmDialogProps {
   confirmData: any;
@@ -47,11 +57,17 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => handleDataChangeDialog("No")} color="primary">
-          No
+        <Button
+          onClick={() => handleDataChangeDialog("No")}
+          className="bg-gray-400 hover:bg-gray-500 text-gray-800 mr-2"
+        >
+          Discard Changes
         </Button>
-        <Button onClick={() => handleDataChangeDialog("Yes")} color="primary">
-          Yes
+        <Button
+          onClick={() => handleDataChangeDialog("Yes")}
+          className="bg-green-500 hover:bg-green-600 text-white"
+        >
+          Save Changes
         </Button>
       </DialogActions>
     </Dialog>

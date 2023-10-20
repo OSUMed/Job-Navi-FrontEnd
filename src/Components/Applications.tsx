@@ -48,6 +48,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { toast } from "@shadcn/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
+import AddIcon from "./ui/AddIcon";
 // interface PropTypes {
 //   cookie: {
 //     session: string;
@@ -258,9 +259,17 @@ export default function Applications() {
         if (isInEditMode) {
           return (
             <>
-              <Button onClick={() => setRowSave(params.row.rowId)}>Save</Button>
-              <pre> </pre>
-              <Button onClick={() => setRowCancel(params.row.rowId)}>
+              <Button
+                className="bg-green-600 m-4"
+                onClick={() => setRowSave(params.row.rowId)}
+              >
+                Save
+              </Button>
+
+              <Button
+                className="bg-gray-400"
+                onClick={() => setRowCancel(params.row.rowId)}
+              >
                 Cancel
               </Button>
             </>
@@ -543,16 +552,15 @@ export default function Applications() {
             <div className="flex justify-end">
               <Button
                 onClick={() => handleDataChangeDialog("No")}
-                color="primary"
-                className="mr-2"
+                className="bg-gray-400 hover:bg-gray-500 text-gray-800 mr-2"
               >
-                No
+                Discard Changes
               </Button>
               <Button
                 onClick={() => handleDataChangeDialog("Yes")}
-                color="primary"
+                className="bg-green-500 hover:bg-green-600 text-white"
               >
-                Yes
+                Save Changes
               </Button>
             </div>
           </DialogContent>
@@ -687,10 +695,10 @@ export default function Applications() {
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button
-                className="mb-2 border-2 z-10"
+                className="mb-2 border bg-white border-purple-500 text-purple-500 hover:bg-purple-100 hover:text-purple-600 px-4 py-2 rounded transition duration-200 ease-in"
                 onClick={() => setOpen(true)}
               >
-                Add Application
+                <AddIcon /> Add Application
               </Button>
               {/* <Button
               variant="outline"

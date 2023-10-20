@@ -58,18 +58,19 @@ import AddIcon from "./ui/AddIcon";
 const hostURL = "https://jobtrackerbackend.up.railway.app/api";
 // const hostURL =
 // "https://cors-anywhere-osu.up.railway.app/https://jobtrackerbackend.up.railway.app/api";
-interface Job {
-  rowId: number;
+type Application = {
+  rowId: string;
   jobTitle: string;
-  dateCreated: string;
+  dateCreated: string | Date;
   priority: string;
   status: string;
-  salary: number;
+  salary: string;
   location: string;
   notes: string;
   company: string;
-  dateApplied: string;
-}
+  dateApplied: string | Date;
+};
+
 // Source: https://stackoverflow.com/questions/70361697/how-to-change-text-color-of-disabled-mui-text-field-mui-v5
 const CustomDisabledTextField = styled(TextField)(() => ({
   ".MuiInputBase-input.Mui-disabled": {
@@ -331,18 +332,20 @@ export default function Applications() {
   const fetchApplications = async () => {
     try {
       const response = await Axios.get(`${hostURL}/applications`);
-      const transformedApplications = response.data.map((application: Job) => ({
-        rowId: application.rowId,
-        jobTitle: application.jobTitle,
-        dateCreated: application.dateCreated,
-        priority: application.priority,
-        status: application.status,
-        salary: application.salary,
-        location: application.location,
-        notes: application.notes,
-        company: application.company,
-        dateApplied: application.dateApplied,
-      }));
+      const transformedApplications = response.data.map(
+        (application: Application) => ({
+          rowId: application.rowId,
+          jobTitle: application.jobTitle,
+          dateCreated: application.dateCreated,
+          priority: application.priority,
+          status: application.status,
+          salary: application.salary,
+          location: application.location,
+          notes: application.notes,
+          company: application.company,
+          dateApplied: application.dateApplied,
+        })
+      );
       setAllApplications(transformedApplications);
     } catch (error) {
       console.error("Error fetching applications:", error);
@@ -351,17 +354,9 @@ export default function Applications() {
 
   /*------------------------------------Create/Add Row Logic------------------------------------*/
 
-  // Streamline this method:
   const handleChangeApplication = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    // Store name attribute value and cell value as new field entry:
-    const inputField = e.target.getAttribute("name");
-    const inputValue = e.target.value;
-    const newJob = { ...addApplication };
-    // Typescript typing error workaround:
-    // https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
-    newJob[inputField as keyof typeof newJob] = inputValue;
-    setaddApplication(newJob);
+    const { name, value } = e.target;
+    setaddApplication((prev: Application) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmitApplication = async (
@@ -393,40 +388,6 @@ export default function Applications() {
       setOpen(false);
     }
   };
-
-  // const handleaddApplicationFormSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-
-  //   const newJob = {
-  //     jobId: randomId(),
-  //     jobTitle: addApplication.jobTitle,
-  //     dateCreated: addApplication.dateCreated,
-  //     priority: addApplication.priority,
-  //     status: addApplication.status,
-  //     location: addApplication.location,
-  //     notes: addApplication.notes,
-  //     company: addApplication.company,
-  //     dateApplied: addApplication.dateApplied,
-  //     salary: addApplication.salary,
-  //   };
-  //   // Axios.post(`${baseURL}/jobs`, newJob, {
-  //   //   headers: {
-  //   //     Authorization: `Bearer ${store.session}`,
-  //   //   },
-  //   // }).then((response) => {
-  //   //   // console.log("3nd localhost res is: ", response.data);
-  //   // });
-  //   // Axios.get(`${baseURL}/jobs`, {
-  //   //   headers: {
-  //   //     Authorization: `Bearer ${store.session}`,
-  //   //   },
-  //   // }).then((response) => {
-  //   //   setAllApplications(response.data);
-  //   //   // console.log("2nd localhost res is: ", response.data);
-  //   // });
-  //   // // console.log("add job: ", newJob);
-  //   setAllApplications([...allJobs, newJob]);
-  // };
 
   /*------------------------------------Update/Edit Cell Dialog Logic------------------------------------*/
 

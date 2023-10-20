@@ -393,40 +393,6 @@ export default function Applications() {
     []
   );
 
-  // User chooses dialog options on editted cell:
-  const handleDataChangeDialog = async (response: string) => {
-    const { newRow, oldRow, resolve } = confirmData;
-    console.log("What is the new row? ", newRow);
-    // console.log("New row is: ", newRow, newRow.jobId);
-    // If user responds yes, send new row to database, else resolve old row back:
-    if (response === "Yes") {
-      try {
-        const updJob: Application = {
-          rowId: newRow.rowId,
-          jobTitle: newRow.jobTitle,
-          dateCreated: newRow.dateCreated,
-          priority: newRow.priority,
-          status: newRow.status,
-          salary: newRow.salary,
-          location: newRow.location,
-          notes: newRow.notes,
-          company: newRow.company,
-          dateApplied: newRow.dateApplied,
-        };
-        await Axios.post(`${hostURL}/applications/${newRow.rowId}`, updJob);
-        resolve(newRow);
-        toast({
-          description: "Contact Updated!",
-        });
-      } catch (error) {
-        console.error("Error updating Job:", error);
-      }
-    } else if (response === "No") {
-      resolve(oldRow);
-    }
-    setConfirmData(null);
-  };
-
   // Promise resolved based on user dialog response:
   const renderConfirmDialog = () => {
     // Case 1: Errors:
@@ -495,6 +461,39 @@ export default function Applications() {
     );
   };
 
+  // User chooses dialog options on editted cell:
+  const handleDataChangeDialog = async (response: string) => {
+    const { newRow, oldRow, resolve } = confirmData;
+    console.log("What is the new row? ", newRow);
+    // console.log("New row is: ", newRow, newRow.jobId);
+    // If user responds yes, send new row to database, else resolve old row back:
+    if (response === "Yes") {
+      try {
+        const updJob: Application = {
+          rowId: newRow.rowId,
+          jobTitle: newRow.jobTitle,
+          dateCreated: newRow.dateCreated,
+          priority: newRow.priority,
+          status: newRow.status,
+          salary: newRow.salary,
+          location: newRow.location,
+          notes: newRow.notes,
+          company: newRow.company,
+          dateApplied: newRow.dateApplied,
+        };
+        await Axios.post(`${hostURL}/applications/${newRow.rowId}`, updJob);
+        resolve(newRow);
+        toast({
+          description: "Contact Updated!",
+        });
+      } catch (error) {
+        console.error("Error updating Job:", error);
+      }
+    } else if (response === "No") {
+      resolve(oldRow);
+    }
+    setConfirmData(null);
+  };
   // Handles Errors:
   const handleProcessRowUpdateError = (error: Error) => {
     console.log(error);

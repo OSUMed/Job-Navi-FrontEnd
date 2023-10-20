@@ -1,11 +1,11 @@
 import * as React from "react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@/Components/ui/collapsible";
 import {
   Form,
   FormControl,
@@ -14,7 +14,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/Components/ui/form";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 import {
@@ -26,10 +26,10 @@ import {
   DialogTitle,
   DialogClose,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/Components/ui/dialog";
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from "@/Components/ui/input";
+import { Label } from "@/Components/ui/label";
 import Axios from "axios";
 import { randomId } from "@mui/x-data-grid-generator";
 // import Axios from "axios";

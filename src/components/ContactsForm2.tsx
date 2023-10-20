@@ -2,12 +2,12 @@
 
 import * as React from "react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@/Components/ui/collapsible";
 import {
   Form,
   FormControl,
@@ -16,7 +16,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/Components/ui/form";
 
 export default function ContactsForm({ onSubmit, onChange }) {
   const [isCompanyInfoOpen, setIsCompanyInfoOpen] = React.useState(false);

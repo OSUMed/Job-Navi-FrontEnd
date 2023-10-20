@@ -34,19 +34,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/Components/ui/dialog";
 // Reusable Component Imports:
 import CustomEditComponent from "./CustomEditComponent";
 import { detailedDiff } from "deep-object-diff";
 import Header from "./NavBar";
 import ContactsForm from "./ContactsForm";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "@/components/ui/use-toast";
+import { Input } from "@/Components/ui/input";
+import { Label } from "@/Components/ui/label";
+import { Button } from "@/Components/ui/button";
+import { ToastAction } from "@/Components/ui/toast";
+import { useToast } from "@/Components/ui/use-toast";
 import { toast } from "@shadcn/ui/toast";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/Components/ui/toaster";
 import AddIcon from "./ui/AddIcon";
 
 // Update with the correct path

@@ -24,7 +24,7 @@ import {
 } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import { detailedDiff } from "deep-object-diff";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -34,7 +34,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-  } from "@/components/ui/dialog";
+  } from "@/Components/ui/dialog";
   
   export default const isUpdateForm = ({changedKeys, differences, confirmData, handleDataChangeDialog}) => {
     return(

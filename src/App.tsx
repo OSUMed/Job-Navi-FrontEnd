@@ -11,8 +11,8 @@ import { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { LoginCard } from "./Components/auth/LoginCard";
 import { LogoutCard } from "./Components/auth/LogoutCard";
-import { Collapsible } from "./components/ui/collapsible";
-import ContactsForm from "./components/ContactsForm";
+import { Collapsible } from "./Components/ui/collapsible";
+import ContactsForm from "./Components/ContactsForm";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null); // To store the user object

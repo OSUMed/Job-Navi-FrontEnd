@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
@@ -8,6 +6,15 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import classnames from "classnames";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -104,10 +111,26 @@ export default function ApplicationsForm({
           placeholder: "Enter a company name..",
         },
         {
+          label: "Location",
+          name: "location",
+          type: "text",
+          required: false,
+          placeholder: "Enter location..",
+        },
+        {
+          label: "optional",
+        },
+        {
+          label: "Notes",
+          name: "notes",
+          type: "text",
+          placeholder: "Enter notes..",
+        },
+        {
           label: "Status",
           name: "status",
           type: "text",
-          required: true,
+          required: false,
           placeholder: "Enter status..",
         },
         {
@@ -115,13 +138,6 @@ export default function ApplicationsForm({
           name: "priority",
           type: "text",
           placeholder: "Enter priority..",
-        },
-        {
-          label: "Location",
-          name: "location",
-          type: "text",
-          required: true,
-          placeholder: "Enter location..",
         },
       ],
     },
@@ -132,14 +148,14 @@ export default function ApplicationsForm({
           label: "Date Applied",
           name: "dateApplied",
           type: "date",
-          required: true,
+          required: false,
           placeholder: "Enter a date applied..",
         },
         {
           label: "Date Added to List",
           name: "dateCreated",
           type: "date",
-          required: true,
+          required: false,
           placeholder: "Enter date added..",
         },
       ],
@@ -151,19 +167,7 @@ export default function ApplicationsForm({
           label: "Salary",
           name: "salary",
           type: "text",
-          placeholder: "Enter salary (optional)..",
-        },
-      ],
-    },
-    {
-      groupName: "Additional Notes",
-      fields: [
-        {
-          label: "Notes",
-          name: "notes",
-          type: "text",
-          required: true,
-          placeholder: "Enter notes..",
+          placeholder: "Enter salary..",
         },
       ],
     },
@@ -171,8 +175,8 @@ export default function ApplicationsForm({
 
   return (
     <>
-      <form onSubmit={onSubmit}>
-        <div className="max-h-[450px] overflow-y-auto">
+      <form onSubmit={handleCloseNow}>
+        <div className="max-h-[450px] overflow-y-auto p-2">
           {fieldGroups.map((group, idx) => (
             <Collapsible
               key={idx}
@@ -187,13 +191,12 @@ export default function ApplicationsForm({
               }
               onOpenChange={
                 idx === 0
-                  ? () => setIsEssentialInfoOpen(!isEssentialInfoOpen)
+                  ? setIsEssentialInfoOpen
                   : idx === 1
-                  ? () =>
-                      setIsApplicationTimelineOpen(!isApplicationTimelineOpen)
+                  ? setIsApplicationTimelineOpen
                   : idx === 2
-                  ? () => setIsJobDetailsOpen(!isJobDetailsOpen)
-                  : () => setIsApplicationNotesOpen(!isApplicationNotesOpen)
+                  ? setIsJobDetailsOpen
+                  : setIsApplicationNotesOpen
               }
               className="w-[350px] space-y-2"
             >
@@ -207,24 +210,77 @@ export default function ApplicationsForm({
                   </Button>
                 </CollapsibleTrigger>
               </div>
-
-              <CollapsibleContent className="space-y-2">
+              <CollapsibleContent className="space-y-1">
                 {group.fields.map((field, fieldIdx) => (
                   <div
-                    className="text-gray-700 font-medium"
+                    className="text-gray-700 font-medium p-1"
                     htmlFor={field.name}
+                    // className={classnames("text-gray-700 font-medium", {
+                    //   "flex space-x-2":
+                    //     field.name === "priority" || field.name === "status",
+                    // })}
                   >
-                    <Label className="text-middle" htmlFor={field.name}>
-                      {field.label}:
-                    </Label>
-                    <Input
-                      className="col-span-3"
-                      type={field.type}
-                      name={field.name}
-                      placeholder={field.placeholder}
-                      required={field.required}
-                      onChange={onChange}
-                    />
+                    {field.label !== "optional" ? (
+                      <Label className="text-middle" htmlFor={field.name}>
+                        {field.label}:
+                      </Label>
+                    ) : null}
+
+                    {field.name === "priority" ? (
+                      <Select>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select priority" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {["High", "Medium", "Low"].map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : field.name === "status" ? (
+                      <Select>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[
+                            "Bookmarked",
+                            "Applying",
+                            "Applied",
+                            "Interviewing",
+                            "Negotiating",
+                            "Accepted",
+                          ].map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : field.label === "optional" ? (
+                      <div className="text-gray-500 italic border-b text-xs pb-2 -mb-6">
+                        All fields below are optional.
+                      </div>
+                    ) : field.name === "notes" ? (
+                      <Textarea
+                        className="col-span-3 resize-none"
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        required={field.required}
+                        onChange={onChange}
+                      />
+                    ) : (
+                      <Input
+                        className="col-span-3"
+                        type={field.type}
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        required={field.required}
+                        onChange={onChange}
+                      />
+                    )}
                     <br />
                   </div>
                 ))}

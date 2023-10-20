@@ -216,13 +216,15 @@ export default function Contacts({ cookie }: PropTypes) {
           <>
             <Button
               className="m-2"
-              sx={{ mr: 1 }}
               onClick={() => setRowEdit(params.row.rowId)}
             >
               Update
             </Button>
             <br />
-            <Button onClick={() => handleDelete(params.row.rowId)}>
+            <Button
+              variant="destructive"
+              onClick={() => handleDelete(params.row.rowId)}
+            >
               Delete
             </Button>
           </>

@@ -4,7 +4,6 @@ import {
   TableContainer,
   Paper,
   Box,
-  DialogActions,
   Container,
   Typography,
   Grid,
@@ -37,6 +36,8 @@ import {
 } from "@/components/ui/dialog";
 // Reusable Component Imports:
 import CustomEditComponent from "./CustomEditComponent";
+import ApplicationsForm from "./ApplicationsForm";
+import isUpdateForm from "./isUpdateForm";
 import { detailedDiff } from "deep-object-diff";
 import Header from "./NavBar";
 import ContactsForm from "./ContactsForm";
@@ -68,7 +69,6 @@ interface Job {
   company: string;
   dateApplied: string;
 }
-
 // Source: https://stackoverflow.com/questions/70361697/how-to-change-text-color-of-disabled-mui-text-field-mui-v5
 const CustomDisabledTextField = styled(TextField)(() => ({
   ".MuiInputBase-input.Mui-disabled": {
@@ -223,14 +223,17 @@ export default function Applications() {
     {
       field: "priority",
       headerName: "Priority",
-      width: 80,
+      width: 120,
+      type: "singleSelect",
+      // I want this header's column to have options we can pick from:
+      valueOptions: ["High", "Medium", "Low"],
       editable: true,
       sortable: true,
     },
     {
       field: "status",
       headerName: "Status",
-      width: 130,
+      width: 155,
       type: "singleSelect",
       // I want this header's column to have options we can pick from:
       valueOptions: [
@@ -255,17 +258,9 @@ export default function Applications() {
         if (isInEditMode) {
           return (
             <>
-              <Button
-                onClick={() => setRowSave(params.row.rowId)}
-                variant="contained"
-              >
-                Save
-              </Button>
+              <Button onClick={() => setRowSave(params.row.rowId)}>Save</Button>
               <pre> </pre>
-              <Button
-                onClick={() => setRowCancel(params.row.rowId)}
-                variant="contained"
-              >
+              <Button onClick={() => setRowCancel(params.row.rowId)}>
                 Cancel
               </Button>
             </>
@@ -274,16 +269,15 @@ export default function Applications() {
         return (
           <>
             <Button
-              sx={{ mr: 1 }}
+              className="m-2"
               onClick={() => setRowEdit(params.row.rowId)}
-              variant="contained"
             >
               Update
             </Button>
             <br />
             <Button
+              variant="destructive"
               onClick={() => handleDelete(params.row.rowId)}
-              variant="contained"
             >
               Delete
             </Button>
@@ -517,39 +511,53 @@ export default function Applications() {
 
     // Default Case: render confirmation dialog:
     return (
-      <Dialog maxWidth="xs" open={confirmData}>
-        <DialogTitle>Confirm Update</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" gutterBottom>
-            You are about to update the following information:
-          </Typography>
-          {changedKeys.map((key) => (
-            <div
-              key={key}
-              style={{
-                backgroundColor: "#f8f8f8",
-                padding: "8px",
-                border: "1px solid #ccc",
-                marginBottom: "8px",
-              }}
+      <>
+        {/* <isUpdateForm
+          changedKeys={changedKeys}
+          confirmData={confirmData}
+          handleDataChangeDialog={handleDataChangeDialog}
+          differences={differences}
+        /> */}
+        <Dialog open={confirmData}>
+          <DialogTitle>Confirm Update</DialogTitle>
+          <DialogContent>
+            <DialogTitle>
+              You are about to update the following information:
+            </DialogTitle>
+            {changedKeys.map((key) => (
+              <div
+                key={key}
+                className="bg-gray-100 p-2 border border-gray-300 mb-2"
+              >
+                <strong>{key}:</strong>{" "}
+                {differences.updated[key as keyof typeof differences.updated]}
+              </div>
+            ))}
+            <Typography
+              variant="body1"
+              gutterBottom
+              style={{ marginTop: "1em" }}
             >
-              <strong>{key}:</strong>{" "}
-              {differences.updated[key as keyof typeof differences.updated]}
+              Are you sure you want to proceed?
+            </Typography>
+            <div className="flex justify-end">
+              <Button
+                onClick={() => handleDataChangeDialog("No")}
+                color="primary"
+                className="mr-2"
+              >
+                No
+              </Button>
+              <Button
+                onClick={() => handleDataChangeDialog("Yes")}
+                color="primary"
+              >
+                Yes
+              </Button>
             </div>
-          ))}
-          <Typography variant="body1" gutterBottom style={{ marginTop: "1em" }}>
-            Are you sure you want to proceed?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleDataChangeDialog("No")} color="primary">
-            No
-          </Button>
-          <Button onClick={() => handleDataChangeDialog("Yes")} color="primary">
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      </>
     );
   };
 
@@ -580,7 +588,9 @@ export default function Applications() {
     try {
       await Axios.post(`${hostURL}/applications/${applicationId}/delete`);
       await fetchApplications();
-      alert("Application deleted!");
+      toast({
+        description: "Contact deleted!",
+      });
     } catch (error) {
       console.error("Error deleting application:", error);
     }
@@ -696,7 +706,7 @@ export default function Applications() {
                   Add New Application and Press Enter
                 </DialogDescription>
               </DialogHeader>
-              <ContactsForm
+              <ApplicationsForm
                 onSubmit={handleAddApplicationFormSubmit}
                 onChange={handleChangeApplication}
                 setOpen={setOpen}

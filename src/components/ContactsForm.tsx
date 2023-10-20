@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
@@ -104,14 +102,24 @@ export default function ContactsForm({
           label: "Title",
           name: "title",
           type: "text",
+          required: true,
           placeholder: "Enter title..",
+        },
+        {
+          label: "optional",
         },
         {
           label: "Relationship",
           name: "relationship",
           type: "text",
-          required: true,
+          required: false,
           placeholder: "Enter relationship..",
+        },
+        {
+          label: "Notes",
+          name: "notes",
+          type: "text",
+          placeholder: "Enter notes..",
         },
       ],
     },
@@ -122,14 +130,14 @@ export default function ContactsForm({
           label: "Email",
           name: "email",
           type: "text",
-          required: true,
+          required: false,
           placeholder: "Enter email..",
         },
         {
           label: "Phone",
           name: "phone",
           type: "text",
-          required: true,
+          required: false,
           placeholder: "Enter phone..",
         },
       ],
@@ -138,17 +146,10 @@ export default function ContactsForm({
       groupName: "Additional Notes",
       fields: [
         {
-          label: "Notes",
-          name: "notes",
-          type: "text",
-          required: true,
-          placeholder: "Enter notes..",
-        },
-        {
           label: "Follow Up Date",
           name: "followUpDate",
           type: "date",
-          required: true,
+          required: false,
           placeholder: "Enter follow-up date..",
         },
       ],
@@ -189,23 +190,31 @@ export default function ContactsForm({
                 </CollapsibleTrigger>
               </div>
 
-              <CollapsibleContent className="space-y-2">
+              <CollapsibleContent className="space-y-1">
                 {group.fields.map((field, fieldIdx) => (
                   <div
-                    className="text-gray-700 font-medium"
+                    className="text-gray-700 font-medium p-1"
                     htmlFor={field.name}
                   >
-                    <Label className="text-middle" htmlFor={field.name}>
-                      {field.label}:
-                    </Label>
-                    <Input
-                      className="col-span-3"
-                      type={field.type}
-                      name={field.name}
-                      placeholder={field.placeholder}
-                      required={field.required}
-                      onChange={onChange}
-                    />
+                    {field.label !== "optional" ? (
+                      <Label className="text-middle" htmlFor={field.name}>
+                        {field.label}:
+                      </Label>
+                    ) : null}
+                    {field.label === "optional" ? (
+                      <div className="text-gray-500 italic border-b text-xs pb-2 -mb-6">
+                        All fields below are optional.
+                      </div>
+                    ) : (
+                      <Input
+                        className="col-span-3"
+                        type={field.type}
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        required={field.required}
+                        onChange={onChange}
+                      />
+                    )}
                     <br />
                   </div>
                 ))}

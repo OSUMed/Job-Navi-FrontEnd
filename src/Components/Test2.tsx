@@ -58,41 +58,40 @@ export default function SingleRowSelectionGrid2() {
 
   return (
     <div style={{ height: 400, width: "100%" }}>
-      {sheetVisible && (
-        <Sheet open={sheetVisible} onOpenChange={handleSheetOpenChange}>
-          <SheetTrigger asChild>
-            {sheetVisible ? <></> : <h1>Hello fail</h1>}
-            {/* <Button onClick={handleOpenSheet} disabled={!selectedRow}>
+      <Sheet open={sheetVisible} onOpenChange={handleSheetOpenChange}>
+        <SheetTrigger asChild>
+          {sheetVisible ? <></> : <h1>Hello fail</h1>}
+          {/* <Button onClick={handleOpenSheet} disabled={!selectedRow}>
               Edit Selected Row
             </Button> */}
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Edit profile</SheetTitle>
-              <SheetDescription>
-                Make changes to your profile here. Click save when you're done.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="grid gap-4 py-4">
-              {Object.entries(selectedRowData || {}).map(([key, value]) => (
-                <div className="grid grid-cols-4 items-center gap-4" key={key}>
-                  <Label htmlFor={key} className="text-right">
-                    {key}
-                  </Label>
-                  <Input id={key} value={value} className="col-span-3" />
-                </div>
-              ))}
-            </div>
-            <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit" onClick={() => setSheetVisible(false)}>
-                  Save changes
-                </Button>
-              </SheetClose>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
-      )}
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Edit profile</SheetTitle>
+            <SheetDescription>
+              Make changes to your profile here. Click save when you're done.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="grid gap-4 py-4">
+            {Object.entries(selectedRowData || {}).map(([key, value]) => (
+              <div className="grid grid-cols-4 items-center gap-4" key={key}>
+                <Label htmlFor={key} className="text-right">
+                  {key}
+                </Label>
+                <Input id={key} value={value} className="col-span-3" />
+              </div>
+            ))}
+          </div>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button type="submit" onClick={() => setSheetVisible(false)}>
+                Save changes
+              </Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+
       <DataGrid
         {...data}
         onRowSelectionModelChange={handleRowSelection}

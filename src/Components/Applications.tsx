@@ -389,6 +389,23 @@ export default function Applications() {
     }
   };
 
+  /*------------------------------------C hange Table Views ------------------------------------*/
+
+  const setRowEdit = (id: GridRowId) => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+  const setRowSave = async (id: GridRowId) => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const setRowCancel = (id: GridRowId) => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+  };
+
   /*------------------------------------Update/Edit Cell Dialog Logic------------------------------------*/
 
   // Editable Cells: new data saved in confirmData
@@ -402,11 +419,6 @@ export default function Applications() {
     []
   );
 
-  // Handles Errors:
-  const handleProcessRowUpdateError = (error: Error) => {
-    console.log(error);
-  };
-
   // User chooses dialog options on editted cell:
   const handleDataChangeDialog = async (response: string) => {
     const { newRow, oldRow, resolve } = confirmData;
@@ -415,7 +427,7 @@ export default function Applications() {
     // If user responds yes, send new row to database, else resolve old row back:
     if (response === "Yes") {
       try {
-        const updJob: Job = {
+        const updJob: Application = {
           rowId: newRow.rowId,
           jobTitle: newRow.jobTitle,
           dateCreated: newRow.dateCreated,
@@ -427,7 +439,6 @@ export default function Applications() {
           company: newRow.company,
           dateApplied: newRow.dateApplied,
         };
-        console.log("updJob is: ", updJob);
         await Axios.post(`${hostURL}/applications/${newRow.rowId}`, updJob);
         resolve(newRow);
         toast({
@@ -449,10 +460,8 @@ export default function Applications() {
       return null;
     }
     const { newRow, oldRow, resolve } = confirmData;
-    console.log("what is row right renderConfirmDialog: ", newRow);
     const differences = detailedDiff(oldRow, newRow);
     const changedKeys = Object.keys(differences.updated);
-    console.log("what is row right renderConfirmDialog: ", newRow);
 
     // Case 2: if new input is same as old input, don't show dialog:
     if (JSON.stringify(newRow) === JSON.stringify(oldRow)) {
@@ -512,6 +521,11 @@ export default function Applications() {
     );
   };
 
+  // Handles Errors:
+  const handleProcessRowUpdateError = (error: Error) => {
+    console.log(error);
+  };
+
   /*------------------------------------Delete Row Logic------------------------------------*/
 
   const handleDelete = async (applicationId: string) => {
@@ -524,22 +538,6 @@ export default function Applications() {
     } catch (error) {
       console.error("Error deleting application:", error);
     }
-  };
-
-  const setRowEdit = (id: GridRowId) => {
-    console.log("We just setRowEdit");
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
-
-  const setRowSave = async (id: GridRowId) => {
-    console.log("We just setRowSAVE");
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
-  const setRowCancel = (id: GridRowId) => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
   };
 
   return (

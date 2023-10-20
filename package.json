@@ -16,7 +16,7 @@
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.13",
     "@mui/x-data-grid": "^6.11.0",
-    "@mui/x-data-grid-generator": "^6.11.0",
+    "@mui/x-data-grid-generator": "^6.16.2",
     "@mui/x-data-grid-pro": "^6.11.0",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-collapsible": "^1.0.3",

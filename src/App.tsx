@@ -2,7 +2,9 @@ import React from "react";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import Dashboard from "./Components/Dashboard";
+import SingleRowSelectionGrid from "./Components/Test";
+import SingleRowSelectionGrid2 from "./Components/Test2";
+import Test3 from "./Components/Test3";
 import Contacts from "./Components/Contacts";
 import Applications from "./Components/Applications";
 import Notes from "./Components/Notes";
@@ -46,7 +48,9 @@ const App: React.FC = () => {
             <Route path="applications" element={<Applications />} />
             <Route path="notes" element={<Notes />} />
             <Route path="logout" element={<LogoutCard />} />
-            <Route path="test" element={<ContactsForm />} />
+            <Route path="test" element={<SingleRowSelectionGrid />} />
+            <Route path="test2" element={<SingleRowSelectionGrid2 />} />
+            <Route path="test3" element={<Test3 />} />
           </>
         ) : (
           // Render a login component or redirect to a login page

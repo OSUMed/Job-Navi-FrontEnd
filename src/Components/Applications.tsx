@@ -11,7 +11,6 @@ import {
   SxProps,
 } from "@mui/material";
 import { Close as CancelIcon } from "@mui/icons-material";
-import AddIcon from "./ui/AddIcon";
 import {
   DataGrid,
   GridColDef,
@@ -49,7 +48,7 @@ import { ToastAction } from "@/Components/ui/toast";
 import { useToast } from "@/Components/ui/use-toast";
 import { toast } from "@shadcn/ui/toast";
 import { Toaster } from "@/Components/ui/toaster";
-import AddIcon from "./ui/AddIcon";
+// import AddIcon from "./ui/AddIcon";
 // interface PropTypes {
 //   cookie: {
 //     session: string;
@@ -699,7 +698,7 @@ export default function Applications() {
                 className="mb-2 border bg-white border-purple-500 text-purple-500 hover:bg-purple-100 hover:text-purple-600 px-4 py-2 rounded transition duration-200 ease-in"
                 onClick={() => setOpen(true)}
               >
-                <AddIcon /> Add Application
+                Add Application
               </Button>
               {/* <Button
               variant="outline"

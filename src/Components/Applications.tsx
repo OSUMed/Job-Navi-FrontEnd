@@ -11,6 +11,7 @@ import {
   SxProps,
 } from "@mui/material";
 import { Close as CancelIcon } from "@mui/icons-material";
+import AddIcon from "./ui/AddIcon";
 import {
   DataGrid,
   GridColDef,

@@ -30,7 +30,6 @@ import {
 import { useForm } from "react-hook-form";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
-
 import Axios from "axios";
 import { randomId } from "@mui/x-data-grid-generator";
 // import Axios from "axios";
@@ -103,7 +102,6 @@ export default function ContactsForm({
           label: "Title",
           name: "title",
           type: "text",
-
           required: true,
           placeholder: "Enter title..",
         },
@@ -132,7 +130,6 @@ export default function ContactsForm({
           label: "Email",
           name: "email",
           type: "text",
-
           required: false,
           placeholder: "Enter email..",
         },

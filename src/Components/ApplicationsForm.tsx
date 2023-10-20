@@ -1,17 +1,11 @@
 import * as React from "react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { Button } from "@/Components/ui/button";
-// import {
-//   Collapsible,
-//   CollapsibleContent,
-//   CollapsibleTrigger,
-// } from "@/Components/ui/collapsible";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "./ui/collapsible";
-
+} from "@/Components/ui/collapsible";
 import classnames from "classnames";
 import {
   Select,

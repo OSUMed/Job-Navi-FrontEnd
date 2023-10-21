@@ -10,6 +10,7 @@ import {
   TextField,
   SxProps,
 } from "@mui/material";
+
 import { Close as CancelIcon } from "@mui/icons-material";
 import {
   DataGrid,
@@ -20,8 +21,19 @@ import {
   GridRowModes,
   GridRowModesModel,
   GridToolbar,
+  useGridApiRef,
   GridActionsCellItem,
 } from "@mui/x-data-grid";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
 import {
@@ -49,6 +61,7 @@ import { useToast } from "@/Components/ui/use-toast";
 import { toast } from "@shadcn/ui/toast";
 import { Toaster } from "@/Components/ui/toaster";
 import AddIcon from "./ui/AddIcon";
+import ApplicationSidebar from "./ApplicationSidebar";
 // interface PropTypes {
 //   cookie: {
 //     session: string;
@@ -101,6 +114,11 @@ export default function Applications() {
   );
   const [open, setOpen] = React.useState(false);
   const { toast } = useToast();
+  const [sheetVisible, setSheetVisible] = React.useState(false);
+  const [selectedRowData, setSelectedRowData] = React.useState<any | null>(
+    null
+  );
+  const [selectedRow, setSelectedRow] = React.useState<string | null>(null);
   const columns: GridColDef[] = [
     {
       field: "jobTitle",
@@ -296,6 +314,7 @@ export default function Applications() {
       },
     },
   ];
+  const apiRef = useGridApiRef();
   const dataGridStyles: SxProps = {
     // Required for Data table creation, if data grid doesn't have a height, it errors out(MUI bug):
     height: 500,
@@ -372,6 +391,7 @@ export default function Applications() {
   };
 
   const setRowSave = async (id: GridRowId) => {
+    console.log("what is rowModesModel", rowModesModel);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
@@ -382,9 +402,9 @@ export default function Applications() {
     });
   };
 
-  /*------------------------------------Update/Edit Cell Dialog Logic------------------------------------*/
+  /*------------------------------------Confirm Update/Edit Cell Dialog Logic------------------------------------*/
 
-  // Editable Cells: new data saved in confirmData
+  // Function called to confirm update changes:
   const processRowUpdate = React.useCallback(
     (newRow: GridRowModel, oldRow: GridRowModel) =>
       new Promise<GridRowModel>((resolve, reject) => {
@@ -395,7 +415,7 @@ export default function Applications() {
 
   // Promise resolved based on user dialog response:
   const renderConfirmDialog = () => {
-    // Case 1: Errors:
+    // Dialog doesn't get rendered if confirmData was never changed:
     if (!confirmData) {
       return null;
     }
@@ -513,6 +533,41 @@ export default function Applications() {
     }
   };
 
+  /*------------------------------------Sidebar Logic------------------------------------*/
+
+  // Only if button is clicked, open sidebar:
+  // const handleOpenSheet = () => {
+  //   if (selectedRow) {
+  //     const rowData = allApplications.find((row) => row.rowId === selectedRow);
+  //     setSelectedRowData(rowData);
+  //     setSheetVisible(true);
+  //   }
+  // };
+
+  const handleRowSelection = (event: any) => {
+    const selectedRowId = event[0];
+    setSelectedRow(selectedRowId);
+
+    const rowData = allApplications.find((row) => row.rowId === selectedRowId);
+    console.log("rowdata: ", rowData, sheetVisible);
+    setSelectedRowData(rowData);
+  };
+  const handleRowDoubleClick = (params: any) => {
+    setSelectedRow(params.id);
+
+    const rowData = allApplications.find((row) => row.rowId === params.id);
+    console.log("I was double clicked!", rowData);
+    setSelectedRowData(rowData);
+    setSheetVisible(true);
+  };
+  const handleSheetOpenChange = (open: boolean) => {
+    setSheetVisible(open);
+  };
+  const handleSidebarSubmit = () => {
+    setRowSave(params.row.rowId);
+    setSheetVisible(false);
+  };
+
   return (
     <Box className="bg-gray-100 min-h-screen">
       <Header />
@@ -544,6 +599,37 @@ export default function Applications() {
               />
             </DialogContent>
           </Dialog>
+          <Sheet open={sheetVisible} onOpenChange={handleSheetOpenChange}>
+            <SheetTrigger asChild>
+              {sheetVisible && <></>}
+              {/* <Button onClick={handleOpenSheet} disabled={!selectedRow}>
+              Edit Selected Row
+            </Button> */}
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Edit profile</SheetTitle>
+                <SheetDescription>
+                  Make changes to your profile here. Click save when you're
+                  done.
+                </SheetDescription>
+              </SheetHeader>
+              <ApplicationSidebar
+                setAllApplications={setAllApplications}
+                allApplications={allApplications}
+                selectedRowData={selectedRowData}
+                processRowUpdate={processRowUpdate}
+              />
+              <SheetFooter>
+                <SheetClose asChild>
+                  <Button type="submit" onClick={handleSidebarSubmit}>
+                    {/* <Button type="submit" onClick={() => setSheetVisible(false)}> */}
+                    Save changes
+                  </Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
           <TableContainer component={Paper}>
             <Paper sx={dataGridStyles}>
               {renderConfirmDialog()}
@@ -553,12 +639,19 @@ export default function Applications() {
                 getRowHeight={() => "auto"}
                 getRowId={(row) => row.rowId}
                 editMode="row"
+                rowModesModel={rowModesModel}
+                // These 2 props to confirm changes to row:
                 processRowUpdate={processRowUpdate}
                 onProcessRowUpdateError={handleProcessRowUpdateError}
-                rowModesModel={rowModesModel}
+                // Toolbar:
                 slots={{
                   toolbar: GridToolbar,
                 }}
+                // Sidebar logic:
+                onRowSelectionModelChange={handleRowSelection}
+                rowSelectionModel={selectedRow ? [selectedRow] : []}
+                onRowDoubleClick={handleRowDoubleClick}
+                apiRef={apiRef}
               />
             </Paper>
           </TableContainer>

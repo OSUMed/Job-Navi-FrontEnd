@@ -20,6 +20,18 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
 
+type Application = {
+  rowId: string;
+  jobTitle: string;
+  dateCreated: string | Date;
+  priority: string;
+  status: string;
+  salary: string;
+  location: string;
+  notes: string;
+  company: string;
+  dateApplied: string | Date;
+};
 const inputConfig = {
   notes: {
     component: "textarea",
@@ -42,6 +54,7 @@ const inputConfig = {
 };
 
 type FormData = {
+  rowId: string;
   notes: string;
   priority: string;
   status: string;
@@ -57,13 +70,12 @@ const ApplicationSidebar = ({
   selectedRowData,
   setAllApplications,
   allApplications,
-  updatedRowData,
   processRowUpdate,
-  setSelectedRow,
-  //   handleSidebarSave,
-  //   updateOnChangeSidebar,
 }) => {
-  const [formData, setFormData] = React.useState({ ...selectedRowData });
+  const [formData, setFormData] = React.useState<FormData>({
+    ...selectedRowData,
+  });
+
   const updateOnChangeSidebar = (
     key: string,
     event: React.ChangeEvent<
@@ -75,7 +87,6 @@ const ApplicationSidebar = ({
       ...prevData,
       [key]: newValue,
     }));
-    console.log("formData: ", formData);
   };
 
   const updateOnSelectChangeSidebar = (key: string, selectedValue: string) => {
@@ -83,20 +94,19 @@ const ApplicationSidebar = ({
       ...prevData,
       [key]: selectedValue,
     }));
-    console.log("formData: ", formData);
   };
 
-  const handleSidebarSave = async (event) => {
+  const handleSidebarSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    console.log("selectedRowData: ", selectedRowData, typeof selectedRowData);
-    console.log("selectedRowData: ", formData, typeof formData);
     try {
       // 1. Update the server--> the promise will make the req
       await processRowUpdate(formData, selectedRowData);
+
       // 2. Update the local state
-      const updatedApplications = allApplications.map((application) =>
-        application.rowId === formData.rowId ? formData : application
+      const updatedApplications = allApplications.map(
+        (application: Application) =>
+          application.rowId === formData.rowId ? formData : application
       );
       setAllApplications(updatedApplications);
     } catch (error) {
@@ -104,59 +114,12 @@ const ApplicationSidebar = ({
     }
   };
 
-  //   //   console.log("formData: ", formData);
-  //   const handleSidebarSave = async (event) => {
-  //     event.preventDefault();
-
-  //     console.log("selectedRowData: ", selectedRowData, typeof selectedRowData);
-  //     console.log("selectedRowData: ", formData, typeof formData);
-  //     try {
-  //       // 1. Update the server--> the promise will make the req
-  //       await processRowUpdate(formData, selectedRowData);
-  //       // 2. Update the local state
-  //       const updatedApplications = allApplications.map((application) =>
-  //         application.rowId === formData.rowId ? formData : application
-  //       );
-  //       setAllApplications(updatedApplications);
-  //     } catch (error) {
-  //       console.error("Failed to update row:", error);
-  //     }
-  //   };
-
-  //   return (
-  //     <div className="max-h-[450px] overflow-y-auto p-2">
-  //       <div className="grid gap-4 py-4">
-  //         <form onSubmit={handleSidebarSave}>
-  //           {Object.entries(selectedRowData || {}).map(([key, value]) => {
-  //             if (key === "rowid") return null;
-  //             else {
-  //               return (
-  //                 <div className="grid grid-cols-4 items-center gap-4" key={key}>
-  //                   <Label htmlFor={key} className="text-right">
-  //                     {key}
-  //                   </Label>
-  //                   <Input
-  //                     id={key}
-  //                     value={formData[key]}
-  //                     onChange={(event) => updateSidebar(key, event)}
-  //                     className="col-span-3"
-  //                   />
-  //                 </div>
-  //               );
-  //             }
-  //           })}
-  //           <Button type="submit">Update Application</Button>
-  //         </form>
-  //       </div>
-  //     </div>
-  //   );
-
   return (
-    <div className="max-h-[550px] overflow-y-auto p-2">
+    <div className="max-h-[560px] overflow-y-auto p-2">
       <form onSubmit={handleSidebarSave}>
         <div className="grid gap-4 py-4">
           {Object.entries(selectedRowData || {}).map(([key, value]) => {
-            if (key === "rowid") return null;
+            if (key === "rowId") return null;
 
             const config = inputConfig[key];
             if (config) {

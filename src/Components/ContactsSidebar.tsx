@@ -31,11 +31,6 @@ interface Contact {
   notes?: string;
   followUpDate?: string | Date;
 }
-const inputConfig = {
-  notes: {
-    component: "textarea",
-  },
-};
 
 type FormData = {
   rowId: string;
@@ -48,6 +43,72 @@ type FormData = {
   dateApplied: Date | string;
   dateCreated: Date | string;
   salary: string;
+};
+
+const inputConfig = {
+  companyName: {
+    component: "input",
+    type: "text",
+    placeholder: "Enter company name..",
+    required: true,
+    label: "Company Name",
+    order: 1,
+  },
+  fullName: {
+    component: "input",
+    type: "text",
+    placeholder: "Enter full name..",
+    required: true,
+    label: "Full Name",
+    order: 2,
+  },
+  title: {
+    component: "input",
+    type: "text",
+    placeholder: "Enter title..",
+    label: "Title",
+    order: 3,
+  },
+  email: {
+    component: "input",
+    type: "text",
+    placeholder: "Enter email..",
+    required: true,
+    label: "Email",
+    order: 4,
+  },
+  phone: {
+    component: "input",
+    type: "text",
+    placeholder: "Enter phone..",
+    required: true,
+    label: "Phone",
+    order: 5,
+  },
+  relationship: {
+    component: "input",
+    type: "text",
+    placeholder: "Enter relationship..",
+    required: true,
+    label: "Relationship",
+    order: 6,
+  },
+  notes: {
+    component: "input",
+    type: "text",
+    placeholder: "Enter notes..",
+    required: true,
+    label: "Notes",
+    order: 7,
+  },
+  followUpDate: {
+    component: "input",
+    type: "date",
+    placeholder: "Enter follow-up date..",
+    required: true,
+    label: "Follow Up Date",
+    order: 8,
+  },
 };
 
 const ContactsSidebar = ({
@@ -98,91 +159,63 @@ const ContactsSidebar = ({
     }
   };
 
+  const sortedFields = Object.entries(selectedRowData || {})
+    .filter(([key]) => key !== "rowId")
+    .sort(
+      ([keyA], [keyB]) => inputConfig[keyA].order - inputConfig[keyB].order
+    );
+
   return (
     <div className="max-h-[560px] overflow-y-auto p-2">
       <form onSubmit={handleSidebarSave}>
         <div className="grid gap-4 py-4">
-          {Object.entries(selectedRowData || {}).map(([key, value]) => {
-            if (key === "rowId") return null;
-
+          {sortedFields.map(([key, value]) => {
             const config = inputConfig[key];
-            if (config) {
-              switch (config.component) {
-                case "textarea":
-                  return (
-                    <div
-                      className="grid grid-cols-4 items-center gap-4"
-                      key={key}
-                    >
-                      <Label htmlFor={key} className="text-right">
-                        {key}
-                      </Label>
-                      <textarea
-                        id={key}
-                        value={formData[key]}
-                        onChange={(event) => updateOnChangeSidebar(key, event)}
-                        className="col-span-3 resize-none border w-62 h-36"
-                      />
-                    </div>
-                  );
-                // case "select":
-                //   return (
-                //     <div
-                //       className="grid grid-cols-4 items-center gap-4"
-                //       key={key}
-                //     >
-                //       <Label htmlFor={key} className="text-right">
-                //         {key}
-                //       </Label>
-                //       <Select
-                //         onValueChange={(value) =>
-                //           updateOnSelectChangeSidebar(key, value)
-                //         }
-                //       >
-                //         <SelectTrigger className="w-[180px]">
-                //           <SelectValue
-                //             placeholder={`${selectedRowData[key]}`}
-                //           />
-                //         </SelectTrigger>
-                //         <SelectContent>
-                //           {config.options.map((option) => (
-                //             <SelectItem
-                //               key={option}
-                //               value={option}
-                //               onChange={(event) =>
-                //                 updateOnChangeSidebar(key, event)
-                //               }
-                //             >
-                //               {option}
-                //             </SelectItem>
-                //           ))}
-                //         </SelectContent>
-                //       </Select>
-                //     </div>
-                //   );
-                default:
-                  return null;
-              }
-            } else {
-              return (
-                <div className="grid grid-cols-4 items-center gap-4" key={key}>
-                  <Label htmlFor={key} className="text-right">
-                    {key}
-                  </Label>
-                  <Input
-                    id={key}
-                    value={formData[key]}
-                    onChange={(event) => updateOnChangeSidebar(key, event)}
-                    className="col-span-3"
-                  />
-                </div>
-              );
+            switch (config.component) {
+              case "textarea":
+                return (
+                  <div
+                    className="grid grid-cols-4 items-center gap-4"
+                    key={key}
+                  >
+                    <Label htmlFor={key} className="text-right">
+                      {config.label}
+                    </Label>
+                    <textarea
+                      id={key}
+                      value={formData[key]}
+                      onChange={(event) => updateOnChangeSidebar(key, event)}
+                      className="col-span-3 resize-none border w-62 h-36"
+                    />
+                  </div>
+                );
+              case "input":
+                return (
+                  <div
+                    className="grid grid-cols-4 items-center gap-4"
+                    key={key}
+                  >
+                    <Label htmlFor={key} className="text-right">
+                      {config.label}
+                    </Label>
+                    <Input
+                      id={key}
+                      type={config.type}
+                      placeholder={config.placeholder}
+                      value={formData[key]}
+                      onChange={(event) => updateOnChangeSidebar(key, event)}
+                      className="col-span-3"
+                    />
+                  </div>
+                );
+              default:
+                return null;
             }
           })}
         </div>
         <SheetFooter>
           <SheetClose asChild>
-            <Button type="submit">Update Application</Button>
+            <Button type="submit">Update Contact</Button>
           </SheetClose>
         </SheetFooter>
       </form>

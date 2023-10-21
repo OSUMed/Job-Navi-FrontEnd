@@ -37,16 +37,19 @@ const inputConfig = {
     component: "input",
     properName: "Job Title",
     order: 1,
+    type: "text",
   },
   company: {
     component: "input",
     properName: "Company",
     order: 2,
+    type: "text",
   },
   location: {
     component: "input",
     properName: "Location",
     order: 3,
+    type: "text",
   },
   notes: {
     component: "textarea",
@@ -76,16 +79,19 @@ const inputConfig = {
     component: "input",
     properName: "Salary",
     order: 7,
+    type: "text",
   },
   dateApplied: {
     component: "input",
     properName: "Date Applied",
     order: 8,
+    type: "date",
   },
   dateCreated: {
     component: "input",
     properName: "Date Added to List",
     order: 9,
+    type: "date",
   },
 };
 
@@ -178,7 +184,7 @@ const ApplicationSidebar = ({
                     </Label>
                     <textarea
                       id={key}
-                      value={formData[key] || ""}
+                      value={formData[key]}
                       onChange={(event) => updateOnChangeSidebar(key, event)}
                       className="col-span-3 resize-none border w-62 h-36"
                     />
@@ -222,6 +228,7 @@ const ApplicationSidebar = ({
                     </Label>
                     <Input
                       id={key}
+                      type={config.type}
                       value={formData[key] || ""}
                       onChange={(event) => updateOnChangeSidebar(key, event)}
                       className="col-span-3"

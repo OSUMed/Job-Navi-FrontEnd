@@ -700,7 +700,10 @@ export default function Applications() {
                 onRowSelectionModelChange={handleRowSelection}
                 rowSelectionModel={selectedRow ? [selectedRow] : []}
                 onRowDoubleClick={handleRowDoubleClick}
-                apiRef={apiRef}
+                initialState={{
+                  pagination: { paginationModel: { pageSize: 10 } },
+                }}
+                pageSizeOptions={[10, 15, 25]}
               />
             </Paper>
           </TableContainer>

@@ -659,6 +659,10 @@ export default function Contacts({ cookie }: PropTypes) {
                 onRowSelectionModelChange={handleRowSelection}
                 rowSelectionModel={selectedRow ? [selectedRow] : []}
                 onRowDoubleClick={handleRowDoubleClick}
+                initialState={{
+                  pagination: { paginationModel: { pageSize: 10 } },
+                }}
+                pageSizeOptions={[10, 15, 25]}
               />
             </Paper>
           </TableContainer>

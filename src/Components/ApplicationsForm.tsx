@@ -221,7 +221,7 @@ export default function ApplicationsForm({ onSubmit, onChange }) {
                       </div>
                     ) : field.name === "notes" ? (
                       <Textarea
-                        className="col-span-3 resize-none"
+                        className="col-span-3 resize-none border"
                         name={field.name}
                         placeholder={field.placeholder}
                         required={field.required}

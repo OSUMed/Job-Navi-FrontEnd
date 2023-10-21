@@ -92,6 +92,18 @@ const CustomDisabledTextField = styled(TextField)(() => ({
   },
 }));
 
+type FormData = {
+  notes: string;
+  priority: string;
+  status: string;
+  jobTitle: string;
+  company: string;
+  location: string;
+  dateApplied: Date | string;
+  dateCreated: Date | string;
+  salary: string;
+};
+
 export default function Applications() {
   const [allApplications, setAllApplications] = React.useState<GridRowsProp>(
     []
@@ -112,13 +124,16 @@ export default function Applications() {
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
+
   const [open, setOpen] = React.useState(false);
+
   // const [selectedRowId, setSelectedRowId] = React.useState<Number>(0);
   const { toast } = useToast();
   const [sheetVisible, setSheetVisible] = React.useState(false);
   const [selectedRowData, setSelectedRowData] = React.useState<any | null>(
     null
   );
+
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null);
   const columns: GridColDef[] = [
     {
@@ -572,6 +587,39 @@ export default function Applications() {
     setSheetVisible(false);
   };
 
+  // const updateOnChangeSidebar = (
+  //   key: string,
+  //   event: React.ChangeEvent<
+  //     HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  //   >
+  // ) => {
+  //   const newValue = event.target.value;
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [key]: newValue,
+  //   }));
+  //   console.log("What is here--: ", newValue, formData);
+  // };
+
+  //   console.log("formData: ", formData);
+  // const handleSidebarSave = async (event) => {
+  //   event.preventDefault();
+
+  //   console.log("selectedRowData: ", selectedRowData, typeof selectedRowData);
+  //   console.log("selectedRowData: ", formData, typeof formData);
+  //   try {
+  //     // 1. Update the server--> the promise will make the req
+  //     await processRowUpdate(formData, selectedRowData);
+  //     // 2. Update the local state
+  //     const updatedApplications = allApplications.map((application) =>
+  //       application.rowId === formData.rowId ? formData : application
+  //     );
+  //     setAllApplications(updatedApplications);
+  //   } catch (error) {
+  //     console.error("Failed to update row:", error);
+  //   }
+  // };
+
   return (
     <Box className="bg-gray-100 min-h-screen">
       <Header />
@@ -622,17 +670,13 @@ export default function Applications() {
                 setAllApplications={setAllApplications}
                 allApplications={allApplications}
                 selectedRowData={selectedRowData}
+                // updateOnChangeSidebar={updateOnChangeSidebar}
+                // setFormData={setFormData}
+                // handleSidebarSave={handleSidebarSave}
+                // formData={formData}
                 processRowUpdate={processRowUpdate}
                 setSelectedRow={setSelectedRow}
               />
-              <SheetFooter>
-                <SheetClose asChild>
-                  <Button type="submit" onClick={handleSidebarSubmit}>
-                    {/* <Button type="submit" onClick={() => setSheetVisible(false)}> */}
-                    Save changes
-                  </Button>
-                </SheetClose>
-              </SheetFooter>
             </SheetContent>
           </Sheet>
           <TableContainer component={Paper}>

@@ -23,6 +23,16 @@ import {
   GridToolbar,
   GridActionsCellItem,
 } from "@mui/x-data-grid";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { styled } from "@mui/material/styles";
 import { randomId } from "@mui/x-data-grid-generator";
 import {
@@ -50,6 +60,7 @@ import { useToast } from "@/Components/ui/use-toast";
 import { toast } from "@shadcn/ui/toast";
 import { Toaster } from "@/Components/ui/toaster";
 import AddIcon from "./ui/AddIcon";
+import ContactsSidebar from "./ContactsSidebar";
 
 // Update with the correct path
 
@@ -79,6 +90,63 @@ interface PropTypes {
     session: string;
   };
 }
+const fields = [
+  {
+    label: "Company Name",
+    name: "companyName",
+    type: "text",
+    required: true,
+    placeholder: "Enter company name..",
+  },
+  {
+    label: "Full Name",
+    name: "fullName",
+    type: "text",
+    required: true,
+    placeholder: "Enter full name..",
+  },
+  {
+    label: "Title",
+    name: "title",
+    type: "text",
+    placeholder: "Enter title..",
+  },
+  {
+    label: "Email",
+    name: "email",
+    type: "text",
+    required: true,
+    placeholder: "Enter email..",
+  },
+  {
+    label: "Phone",
+    name: "phone",
+    type: "text",
+    required: true,
+    placeholder: "Enter phone..",
+  },
+  {
+    label: "Relationship",
+    name: "relationship",
+    type: "text",
+    required: true,
+    placeholder: "Enter relationship..",
+  },
+  {
+    label: "Notes",
+    name: "notes",
+    type: "text",
+    required: true,
+    placeholder: "Enter notes..",
+  },
+  {
+    label: "Follow Up Date",
+    name: "followUpDate",
+    type: "date",
+    required: true,
+    placeholder: "Enter follow-up date..",
+  },
+];
 // Source: https://stackoverflow.com/questions/70361697/how-to-change-text-color-of-disabled-mui-text-field-mui-v5
 const CustomDisabledTextField = styled(TextField)(() => ({
   ".MuiInputBase-input.Mui-disabled": {
@@ -103,6 +171,11 @@ export default function Contacts({ cookie }: PropTypes) {
   });
   const [open, setOpen] = React.useState(false);
   const { toast } = useToast();
+  const [sheetVisible, setSheetVisible] = React.useState(false);
+  const [selectedRowData, setSelectedRowData] = React.useState<any | null>(
+    null
+  );
+  const [selectedRow, setSelectedRow] = React.useState<string | null>(null);
   // const [pageSize, setPageSize] = React.useState<number>(20);
   // const [rowId, setRowId] = React.useState<number | null>();
   // const [editRowId, setEditRowId] = React.useState<number>(95);
@@ -112,9 +185,6 @@ export default function Contacts({ cookie }: PropTypes) {
   );
   const formRef = React.useRef(null);
 
-  function resetForm() {
-    formRef.current.reset();
-  }
   const columns: GridColDef[] = [
     {
       field: "companyName",
@@ -261,39 +331,29 @@ export default function Contacts({ cookie }: PropTypes) {
     height: 500,
   };
 
-  // function preventDefault(event: React.MouseEvent) {
-  //   event.preventDefault();
-  // }
-
   React.useEffect(() => {
-    // setLoading(true);
-    // const headers = {
-    //   "Access-Control-Allow-Origin": "*", // Replace with the allowed origin
-    // };
-    Axios.get(`${hostURL}/contacts`)
-      // Axios.get("https://jobtrackerbackend.up.railway.app/contacts", { headers })
-      .then((response) => {
-        const transformedContacts = response.data.map((contact: Contact) => ({
-          rowId: contact.rowId,
-          companyName: contact.companyName,
-          fullName: contact.fullName,
-          title: contact.title,
-          email: contact.email,
-          phone: contact.phone,
-          relationship: contact.relationship,
-          notes: contact.notes,
-          followUpDate: contact.followUpDate,
-        }));
-        console.log("response data is: ", response.data);
-        setAllContacts(transformedContacts);
-      })
-      .catch((error) => {
-        console.error("Error fetching contacts: ", error);
-      })
-      .finally(() => {
-        // setLoading(false);
-      });
+    fetchContacts();
   }, []);
+
+  const fetchContacts = async () => {
+    try {
+      const response = await Axios.get(`${hostURL}/contacts`);
+      const transformedContacts = response.data.map((contact: Contact) => ({
+        rowId: contact.rowId,
+        companyName: contact.companyName,
+        fullName: contact.fullName,
+        title: contact.title,
+        email: contact.email,
+        phone: contact.phone,
+        relationship: contact.relationship,
+        notes: contact.notes,
+        followUpDate: contact.followUpDate,
+      }));
+      setAllContacts(transformedContacts);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };
 
   /*------------------------------------Create/Add Row Logic------------------------------------*/
 
@@ -336,6 +396,23 @@ export default function Contacts({ cookie }: PropTypes) {
     }
   };
 
+  /*------------------------------------ Change Table Views(not update) ------------------------------------*/
+
+  const setRowEdit = (id: GridRowId) => {
+    console.log("We just setRowEdit");
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+  const setRowSave = async (id: GridRowId) => {
+    console.log("We just setRowSAVE");
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+  const setRowCancel = (id: GridRowId) => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+  };
+
   /*------------------------------------Update/Edit Cell Dialog Logic------------------------------------*/
 
   // Editable Cells: new data saved in confirmData
@@ -376,6 +453,7 @@ export default function Contacts({ cookie }: PropTypes) {
         console.log("UpdContact is: ", updContact);
         await Axios.post(`${hostURL}/contacts/${newRow.rowId}`, updContact);
         resolve(newRow);
+        handleSheetOpenChange(false);
       } catch (error) {
         console.error("Error updating contact:", error);
       }
@@ -442,25 +520,6 @@ export default function Contacts({ cookie }: PropTypes) {
   };
 
   /*------------------------------------Delete Row Logic------------------------------------*/
-  const fetchContacts = async () => {
-    try {
-      const response = await Axios.get(`${hostURL}/contacts`);
-      const transformedContacts = response.data.map((contact: Contact) => ({
-        rowId: contact.rowId,
-        companyName: contact.companyName,
-        fullName: contact.fullName,
-        title: contact.title,
-        email: contact.email,
-        phone: contact.phone,
-        relationship: contact.relationship,
-        notes: contact.notes,
-        followUpDate: contact.followUpDate,
-      }));
-      setAllContacts(transformedContacts);
-    } catch (error) {
-      console.error("Error fetching contacts:", error);
-    }
-  };
 
   const handleDelete = async (contactId: string) => {
     try {
@@ -474,78 +533,42 @@ export default function Contacts({ cookie }: PropTypes) {
     }
   };
 
-  const setRowEdit = (id: GridRowId) => {
-    console.log("We just setRowEdit");
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
-  const setRowSave = async (id: GridRowId) => {
-    console.log("We just setRowSAVE");
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
-  const setRowCancel = (id: GridRowId) => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
-  };
+  /*------------------------------------Sidebar Logic------------------------------------*/
 
-  const fields = [
-    {
-      label: "Company Name",
-      name: "companyName",
-      type: "text",
-      required: true,
-      placeholder: "Enter company name..",
-    },
-    {
-      label: "Full Name",
-      name: "fullName",
-      type: "text",
-      required: true,
-      placeholder: "Enter full name..",
-    },
-    {
-      label: "Title",
-      name: "title",
-      type: "text",
-      placeholder: "Enter title..",
-    },
-    {
-      label: "Email",
-      name: "email",
-      type: "text",
-      required: true,
-      placeholder: "Enter email..",
-    },
-    {
-      label: "Phone",
-      name: "phone",
-      type: "text",
-      required: true,
-      placeholder: "Enter phone..",
-    },
-    {
-      label: "Relationship",
-      name: "relationship",
-      type: "text",
-      required: true,
-      placeholder: "Enter relationship..",
-    },
-    {
-      label: "Notes",
-      name: "notes",
-      type: "text",
-      required: true,
-      placeholder: "Enter notes..",
-    },
-    {
-      label: "Follow Up Date",
-      name: "followUpDate",
-      type: "date",
-      required: true,
-      placeholder: "Enter follow-up date..",
-    },
-  ];
+  // Only if button is clicked, open sidebar:
+  // const handleOpenSheet = () => {
+  //   if (selectedRow) {
+  //     const rowData = allApplications.find((row) => row.rowId === selectedRow);
+  //     setSelectedRowData(rowData);
+  //     setSheetVisible(true);
+  //   }
+  // };
+
+  const handleRowSelection = (event: any) => {
+    // setSelectedRowId(event[0]);
+    const selectedRowId = event[0];
+    console.log("selectedRowId: ", selectedRowId, typeof selectedRowId);
+    setSelectedRow(selectedRowId);
+
+    const rowData = allContacts.find((row) => row.rowId === selectedRowId);
+    console.log("rowdata: ", rowData, sheetVisible);
+    setSelectedRowData(rowData);
+  };
+  const handleRowDoubleClick = (params: any) => {
+    setSelectedRow(params.id);
+
+    const rowData = allContacts.find((row) => row.rowId === params.id);
+    console.log("I was double clicked!", rowData);
+    setSelectedRowData(rowData);
+    setSheetVisible(true);
+  };
+  const handleSheetOpenChange = (open: boolean) => {
+    setSheetVisible(false);
+  };
+  const handleSidebarSubmit = () => {
+    setRowSave(params.row.rowId);
+    setSheetVisible(false);
+  };
 
   return (
     <Box className="bg-gray-100 min-h-screen">
@@ -587,6 +610,34 @@ export default function Contacts({ cookie }: PropTypes) {
               />
             </DialogContent>
           </Dialog>
+          <Sheet open={sheetVisible} onOpenChange={handleSheetOpenChange}>
+            <SheetTrigger asChild>
+              {sheetVisible && <></>}
+              {/* <Button onClick={handleOpenSheet} disabled={!selectedRow}>
+              Edit Selected Row
+            </Button> */}
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Edit profile</SheetTitle>
+                <SheetDescription>
+                  Make changes to your profile here. Click save when you're
+                  done.
+                </SheetDescription>
+              </SheetHeader>
+              <ContactsSidebar
+                setAllContacts={setAllContacts}
+                allContacts={allContacts}
+                selectedRowData={selectedRowData}
+                // updateOnChangeSidebar={updateOnChangeSidebar}
+                // setFormData={setFormData}
+                // handleSidebarSave={handleSidebarSave}
+                // formData={formData}
+                processRowUpdate={processRowUpdate}
+                setSelectedRow={setSelectedRow}
+              />
+            </SheetContent>
+          </Sheet>
           <TableContainer component={Paper}>
             <Paper sx={dataGridStyles}>
               {renderConfirmDialog()}
@@ -596,12 +647,18 @@ export default function Contacts({ cookie }: PropTypes) {
                 getRowHeight={() => "auto"}
                 getRowId={(row) => row.rowId}
                 editMode="row"
+                rowModesModel={rowModesModel}
+                // These 2 props to confirm changes to row:
                 processRowUpdate={processRowUpdate}
                 onProcessRowUpdateError={handleProcessRowUpdateError}
-                rowModesModel={rowModesModel}
+                // Toolbar:
                 slots={{
                   toolbar: GridToolbar,
                 }}
+                // Sidebar logic:
+                onRowSelectionModelChange={handleRowSelection}
+                rowSelectionModel={selectedRow ? [selectedRow] : []}
+                onRowDoubleClick={handleRowDoubleClick}
               />
             </Paper>
           </TableContainer>
@@ -612,90 +669,3 @@ export default function Contacts({ cookie }: PropTypes) {
     </Box>
   );
 }
-
-// https://mockaroo.com/
-// const tableData: GridRowsProp = [
-//   {
-//     contactId: 95,
-//     companyName: "Devshare",
-//     fullName: "Elnar O'Sullivan",
-//     title: "eosullivan2m@hc360.com",
-//     email: "eosullivan2m@irs.gov",
-//     phone:
-//       "in quam fringilla rhoncus mauris enim leo rhoncus sed vestibulum sit amet cursus id",
-//     relationship:
-//       "felis fusce posuere felis sed lacus morbi sem mauris laoreet ut rhoncus aliquet pulvinar",
-//     notes:
-//       "id turpis integer aliquet massa id lobortis convallis tortor risus dapibus augue vel accumsan",
-//     followUpDate: "6/24/2022",
-//   },
-//   {
-//     contactId: 96,
-//     companyName: "Eabox",
-//     fullName: "Berty Key",
-//     title: "bkey2n@ibm.com",
-//     email: "bkey2n@nifty.com",
-//     phone:
-//       "libero non mattis pulvinar nulla pede ullamcorper augue a suscipit nulla elit ac nulla sed vel enim sit amet nunc",
-//     relationship:
-//       "posuere cubilia curae donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet lobortis",
-//     notes:
-//       "ac leo pellentesque ultrices mattis odio donec vitae nisi nam ultrices",
-//     followUpDate: "1/3/2023",
-//   },
-//   {
-//     contactId: 97,
-//     companyName: "Minyx",
-//     fullName: "Wiley Chattell",
-//     title: "wchattell2o@google.co.uk",
-//     email: "wchattell2o@who.int",
-//     phone:
-//       "orci nullam molestie nibh in lectus pellentesque at nulla suspendisse potenti cras in purus eu magna",
-//     relationship:
-//       "eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis turpis sed ante vivamus tortor duis mattis",
-//     notes:
-//       "gravida sem praesent id massa id nisl venenatis lacinia aenean sit amet justo morbi ut odio cras mi pede",
-//     followUpDate: "9/13/2022",
-//   },
-//   {
-//     contactId: 98,
-//     companyName: "Vinder",
-//     fullName: "Skipp Malzard",
-//     title: "smalzard2p@nymag.com",
-//     email: "smalzard2p@youku.com",
-//     phone:
-//       "quis libero nullam sit amet turpis elementum ligula vehicula consequat morbi a ipsum integer a",
-//     relationship:
-//       "eleifend pede libero quis orci nullam molestie nibh in lectus pellentesque at nulla suspendisse potenti",
-//     notes:
-//       "nibh in quis justo maecenas rhoncus aliquam lacus morbi quis tortor id nulla ultrices aliquet maecenas",
-//     followUpDate: "6/4/2022",
-//   },
-//   {
-//     contactId: 99,
-//     companyName: "Meemm",
-//     fullName: "Lazarus Danniel",
-//     title: "ldanniel2q@marketwatch.com",
-//     email: "ldanniel2q@abc.net.au",
-//     phone:
-//       "quisque id justo sit amet sapien dignissim vestibulum vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia",
-//     relationship:
-//       "pharetra magna ac consequat metus sapien ut nunc vestibulum ante ipsum primis in faucibus",
-//     notes:
-//       "erat fermentum justo nec condimentum neque sapien placerat ante nulla justo",
-//     followUpDate: "7/23/2022",
-//   },
-//   {
-//     contactId: 100,
-//     companyName: "Twitterbeat",
-//     fullName: "Lenee Marlowe",
-//     title: "lmarlowe2r@bbb.org",
-//     email: "lmarlowe2r@ow.ly",
-//     phone:
-//       "pulvinar sed nisl nunc rhoncus dui vel sem sed sagittis nam congue risus semper porta volutpat quam pede lobortis",
-//     relationship:
-//       "ut massa quis augue luctus tincidunt nulla mollis molestie lorem quisque ut erat",
-//     notes: "nec dui luctus rutrum nulla tellus in sagittis dui vel nisl",
-//     followUpDate: "12/8/2022",
-//   },
-// ];

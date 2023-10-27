@@ -608,23 +608,6 @@ export default function Contacts({ cookie }: PropTypes) {
         });
   };
 
-  // const handleRowSelection2 = (newSelectedRow: any) => {
-  //   if (newSelectedRow.length > 1) {
-  //     set;
-  //   }
-  //   let newSelectedRowId = newSelectedRow[0];
-
-  //   // If the new selected row is the same as old, change it to null
-  //   if (newSelectedRowId != selectedRowId) {
-  //     setSelectedRowId(newSelectedRowId);
-  //   }
-
-  //   const rowData = allContacts.find((row) => row.rowId === newSelectedRowId);
-  //   setSelectedRowData(rowData);
-
-  //   console.log("selectedRowId: ", newSelectedRowId, typeof newSelectedRowId);
-  //   console.log("rowdata: ", rowData, sheetVisible);
-  // };
   const handleRowDoubleClick = (params: any) => {
     setSelectedRowId(params.id);
 

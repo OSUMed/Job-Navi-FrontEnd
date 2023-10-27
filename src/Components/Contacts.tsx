@@ -604,7 +604,7 @@ export default function Contacts({ cookie }: PropTypes) {
       ? setSheetVisible(true)
       : toast({
           description:
-            "Select a row and press 'Edit' to modify in the sidebar!",
+            "Select a row and press 'View Contact Details' to see more in the sidebar!",
         });
   };
 
@@ -650,7 +650,8 @@ export default function Contacts({ cookie }: PropTypes) {
                     className="mb-2 border bg-white border-blue-500 text-blue-500 hover:bg-blue-100 hover:text-blue-600 px-4 py-2 rounded transition duration-200 ease-in"
                     onClick={handleSidebarView}
                   >
-                    <EditIcon /> <span className="ml-2">Edit Contact</span>
+                    <EditIcon />{" "}
+                    <span className="ml-2">View Contact Details</span>
                   </Button>
                 </>
               </>

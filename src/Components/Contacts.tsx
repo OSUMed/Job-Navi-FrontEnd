@@ -61,6 +61,7 @@ import { useToast } from "@/Components/ui/use-toast";
 import { toast } from "@shadcn/ui/toast";
 import { Toaster } from "@/Components/ui/toaster";
 import AddIcon from "./ui/AddIcon";
+import EditIcon from "./ui/EditIcon";
 import ContactsSidebar from "./ContactsSidebar";
 
 // Update with the correct path
@@ -598,10 +599,13 @@ export default function Contacts({ cookie }: PropTypes) {
 
   const handleSidebarView = () => {
     // Assuming you already have the selectedRowData set when a row is clicked.
-    if (selectedRowData) {
-      // Ensure that there's selected data before showing the sidebar
-      setSheetVisible(true);
-    }
+    // Ensure that there's selected data before showing the sidebar
+    selectedRowData
+      ? setSheetVisible(true)
+      : toast({
+          description:
+            "Select a row and press 'Edit' to modify in the sidebar!",
+        });
   };
 
   // const handleRowSelection2 = (newSelectedRow: any) => {
@@ -663,7 +667,7 @@ export default function Contacts({ cookie }: PropTypes) {
                     className="mb-2 border bg-white border-blue-500 text-blue-500 hover:bg-blue-100 hover:text-blue-600 px-4 py-2 rounded transition duration-200 ease-in"
                     onClick={handleSidebarView}
                   >
-                    <AddIcon /> Edit Contact
+                    <EditIcon /> <span className="ml-2">Edit Contact</span>
                   </Button>
                 </>
               </>

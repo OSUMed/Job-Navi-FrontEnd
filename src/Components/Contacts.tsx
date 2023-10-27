@@ -720,7 +720,6 @@ export default function Contacts({ cookie }: PropTypes) {
                 // These 2 props to confirm changes to row:
                 processRowUpdate={processRowUpdate}
                 onProcessRowUpdateError={handleProcessRowUpdateError}
-                // Toolbar:
                 slots={{
                   toolbar: GridToolbar,
                 }}

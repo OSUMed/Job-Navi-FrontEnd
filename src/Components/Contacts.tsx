@@ -19,6 +19,7 @@ import {
   GridRowId,
   GridRowsProp,
   GridRowModes,
+  GridRowSelectionModel,
   GridRowModesModel,
   GridToolbar,
   GridActionsCellItem,
@@ -172,10 +173,13 @@ export default function Contacts({ cookie }: PropTypes) {
   const [open, setOpen] = React.useState(false);
   const { toast } = useToast();
   const [sheetVisible, setSheetVisible] = React.useState(false);
+  const [rowSelectionModel, setRowSelectionModel] =
+    React.useState<GridRowSelectionModel>([]);
+
   const [selectedRowData, setSelectedRowData] = React.useState<any | null>(
     null
   );
-  const [selectedRow, setSelectedRow] = React.useState<string | null>(null);
+  const [selectedRowId, setSelectedRowId] = React.useState<string | null>(null);
   // const [pageSize, setPageSize] = React.useState<number>(20);
   // const [rowId, setRowId] = React.useState<number | null>();
   // const [editRowId, setEditRowId] = React.useState<number>(95);
@@ -183,6 +187,11 @@ export default function Contacts({ cookie }: PropTypes) {
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
+  React.useEffect(() => {
+    console.log("Current row selection model:", rowSelectionModel);
+    console.log("Current selected row data:", selectedRowData);
+  }, [rowSelectionModel, selectedRowData]);
+
   const formRef = React.useRef(null);
 
   const columns: GridColDef[] = [
@@ -544,18 +553,76 @@ export default function Contacts({ cookie }: PropTypes) {
   //   }
   // };
 
-  const handleRowSelection = (event: any) => {
-    // setSelectedRowId(event[0]);
-    const selectedRowId = event[0];
-    console.log("selectedRowId: ", selectedRowId, typeof selectedRowId);
-    setSelectedRow(selectedRowId);
+  // const handleRowSelection = (newSelection: any) => {
+  //   // setSelectedRowId(event[0]);
+  //   if (newSelection.length) {
+  //     console.log("logged event is: ", event);
+  //     const selectedRowId = newSelection[0];
+  //     console.log("selectedRowId: ", selectedRowId, typeof selectedRowId);
 
-    const rowData = allContacts.find((row) => row.rowId === selectedRowId);
-    console.log("rowdata: ", rowData, sheetVisible);
-    setSelectedRowData(rowData);
+  //     const rowData = allContacts.find((row) => row.rowId === selectedRowId);
+  //     console.log("rowdata: ", rowData, sheetVisible);
+  //     setSelectedRow(selectedRowData);
+  //     setSelectedRowData(rowData);
+  //   } else {
+  //     setSelectedRow(null);
+  //   }
+
+  // const handleRowSelection = (newRowSelectionModel: GridRowSelectionModel) => {
+  //   let newSelectedRowId = newRowSelectionModel[0];
+  //   // If more than one row is selected, keep only the latest selected row
+  //   if (newRowSelectionModel.length > 1) {
+  //     let pickLastElement = newRowSelectionModel.length - 1;
+  //     setRowSelectionModel([newRowSelectionModel[pickLastElement]]);
+  //   } else {
+  //     setRowSelectionModel(newRowSelectionModel);
+  //   }
+  //   const currentRowData = allContacts.find((row) => row.rowId === newSelectedRowId);
+  //   setSelectedRowData(currentRowData);
+  // };
+
+  const handleRowSelection = (newRowSelectionModel: GridRowSelectionModel) => {
+    // Directly pick the last selected row's ID
+    const latestSelectedRowId =
+      newRowSelectionModel[newRowSelectionModel.length - 1];
+
+    // Only set the latest selection to state
+    setRowSelectionModel([latestSelectedRowId]);
+
+    // Find the data for latest selected row and set it
+    const currentRowData = allContacts.find(
+      (row) => row.rowId === latestSelectedRowId
+    );
+    setSelectedRowData(currentRowData);
   };
+
+  const handleSidebarView = () => {
+    // Assuming you already have the selectedRowData set when a row is clicked.
+    if (selectedRowData) {
+      // Ensure that there's selected data before showing the sidebar
+      setSheetVisible(true);
+    }
+  };
+
+  // const handleRowSelection2 = (newSelectedRow: any) => {
+  //   if (newSelectedRow.length > 1) {
+  //     set;
+  //   }
+  //   let newSelectedRowId = newSelectedRow[0];
+
+  //   // If the new selected row is the same as old, change it to null
+  //   if (newSelectedRowId != selectedRowId) {
+  //     setSelectedRowId(newSelectedRowId);
+  //   }
+
+  //   const rowData = allContacts.find((row) => row.rowId === newSelectedRowId);
+  //   setSelectedRowData(rowData);
+
+  //   console.log("selectedRowId: ", newSelectedRowId, typeof newSelectedRowId);
+  //   console.log("rowdata: ", rowData, sheetVisible);
+  // };
   const handleRowDoubleClick = (params: any) => {
-    setSelectedRow(params.id);
+    setSelectedRowId(params.id);
 
     const rowData = allContacts.find((row) => row.rowId === params.id);
     console.log("I was double clicked!", rowData);
@@ -581,12 +648,26 @@ export default function Contacts({ cookie }: PropTypes) {
         >
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button
-                className="mb-2 border bg-white border-purple-500 text-purple-500 hover:bg-purple-100 hover:text-purple-600 px-4 py-2 rounded transition duration-200 ease-in"
-                onClick={() => setOpen(true)}
-              >
-                <AddIcon /> Add Contact
-              </Button>
+              <>
+                <>
+                  {/* Primary Action: Add Contact */}
+                  <Button
+                    className="mr-2 mb-2 bg-purple-500 text-white hover:bg-purple-600 px-4 py-2 rounded transition duration-200 ease-in"
+                    onClick={() => setOpen(true)}
+                  >
+                    <AddIcon /> Add Contact
+                  </Button>
+
+                  {/* Secondary Action: Edit Contact */}
+                  <Button
+                    className="mb-2 border bg-white border-blue-500 text-blue-500 hover:bg-blue-100 hover:text-blue-600 px-4 py-2 rounded transition duration-200 ease-in"
+                    onClick={handleSidebarView}
+                  >
+                    <AddIcon /> Edit Contact
+                  </Button>
+                </>
+              </>
+
               {/* <Button
                 variant="outline"
                 className="text-blue-600 border-blue-600 mb-2 border-2 z-10"
@@ -633,8 +714,9 @@ export default function Contacts({ cookie }: PropTypes) {
                 // setFormData={setFormData}
                 // handleSidebarSave={handleSidebarSave}
                 // formData={formData}
+
                 processRowUpdate={processRowUpdate}
-                setSelectedRow={setSelectedRow}
+                // setSelectedRow={setSelectedRowId}
               />
             </SheetContent>
           </Sheet>
@@ -657,12 +739,13 @@ export default function Contacts({ cookie }: PropTypes) {
                 }}
                 // Sidebar logic:
                 onRowSelectionModelChange={handleRowSelection}
-                rowSelectionModel={selectedRow ? [selectedRow] : []}
-                onRowDoubleClick={handleRowDoubleClick}
+                rowSelectionModel={rowSelectionModel}
+                // onRowDoubleClick={handleRowDoubleClick}
                 initialState={{
                   pagination: { paginationModel: { pageSize: 10 } },
                 }}
                 pageSizeOptions={[10, 15, 25]}
+                checkboxSelection
               />
             </Paper>
           </TableContainer>

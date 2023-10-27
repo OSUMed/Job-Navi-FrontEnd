@@ -41,6 +41,7 @@ export default function SingleRowSelectionGrid2() {
 
     const rowData = data.rows.find((row) => row.id === selectedRowId);
     console.log("rowdata: ", rowData, sheetVisible);
+    console.log("selectedRowId: ", selectedRowId);
     setSelectedRowData(rowData);
     // setSheetVisible(true);
   };

@@ -280,14 +280,14 @@ export default function Contacts({ cookie }: PropTypes) {
           return (
             <>
               <Button
-                className="bg-green-600 m-4"
+                className="bg-green-600 hover:bg-green-700 m-4"
                 onClick={() => setRowSave(params.row.rowId)}
               >
                 Save
               </Button>
               <pre> </pre>
               <Button
-                className="bg-gray-400"
+                className="bg-gray-400 hover:bg-gray-500"
                 onClick={() => setRowCancel(params.row.rowId)}
               >
                 Cancel

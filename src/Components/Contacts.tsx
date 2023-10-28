@@ -400,6 +400,10 @@ export default function Contacts({ cookie }: PropTypes) {
       await Axios.post(`${hostURL}/contacts`, newContact);
       await fetchContacts();
       e.currentTarget.reset();
+      toast({
+        description: "Contact Added!",
+        duration: 2000,
+      });
       setOpen(false);
     } catch (error) {
       console.error("Error adding contact:", error);
@@ -537,6 +541,7 @@ export default function Contacts({ cookie }: PropTypes) {
       await fetchContacts();
       toast({
         description: "Contact deleted!",
+        duration: 2000,
       });
     } catch (error) {
       console.error("Error deleting contact:", error);
@@ -605,6 +610,7 @@ export default function Contacts({ cookie }: PropTypes) {
       : toast({
           description:
             "Select a row and press 'View Contact Details' to see more in the sidebar!",
+          duration: 2000,
         });
   };
 

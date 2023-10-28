@@ -12,6 +12,13 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Alert, AlertDescription } from "../ui/alert";
@@ -27,6 +34,21 @@ export const LoginCard: React.FC = () => {
     setError("");
     const email = emailRef.current?.value || "";
     const password = passwordRef.current?.value || "";
+
+    try {
+      await authSignInWithEmail(email, password);
+    } catch (err) {
+      setError("Invalid Login Credentials: Check Email and Password");
+    }
+  };
+
+  const handleDemoAccess = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    setError("");
+    const email = "tester@gmail.com";
+    const password = "tester";
 
     try {
       await authSignInWithEmail(email, password);
@@ -109,11 +131,45 @@ export const LoginCard: React.FC = () => {
               </div>
             </form>
           </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={handleSignIn}>
-              Sign In
-            </Button>
-            <Button onClick={handleSignUp}>Sign Up</Button>
+          <CardFooter className="flex flex-col space-y-4 items-center justify-center">
+            <div className="flex w-full space-x-4">
+              <Button
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white hover:text-white"
+                variant="outline"
+                onClick={handleSignIn}
+              >
+                Sign In
+              </Button>
+              <Button
+                className="w-full bg-gray-500 hover:bg-gray-600 text-white "
+                onClick={handleSignUp}
+              >
+                Sign Up
+              </Button>
+            </div>
+            {/* <Button
+              className="w-full bg-green-500 hover:bg-green-600 text-white"
+              onClick={handleDemoAccess}
+            >
+              Try It Out
+            </Button> */}
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger className="w-full">
+                  {" "}
+                  <Button
+                    className="w-full bg-green-500 hover:bg-green-600 text-white"
+                    onClick={handleDemoAccess}
+                  >
+                    Try It Out
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent className="bg-gray-900 text-white p-2 rounded-md">
+                  <p>Experience all features without signing up</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </CardFooter>
         </Card>
       </div>

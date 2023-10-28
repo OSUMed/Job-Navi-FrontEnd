@@ -337,7 +337,7 @@ export default function Contacts({ cookie }: PropTypes) {
     },
   ];
   const dataGridStyles: SxProps = {
-    // Required for Data table creation, if data grid doesn't have a height, it errors out(MUI bug):
+    // Required for Data table creation, if data grid doesn't have a height, it errors out(MUI bug)):
     height: 500,
   };
 

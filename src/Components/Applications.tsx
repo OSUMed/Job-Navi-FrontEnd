@@ -410,6 +410,10 @@ export default function Applications() {
       response = await Axios.post(`${hostURL}/applications`, newApplication);
       await fetchApplications();
       e.currentTarget.reset();
+      toast({
+        description: "Application Added!",
+        duration: 2000,
+      });
     } catch (error) {
       console.error("Error adding application:", error);
     }
@@ -538,7 +542,8 @@ export default function Applications() {
         await Axios.post(`${hostURL}/applications/${newRow.rowId}`, updJob);
         resolve(newRow);
         toast({
-          description: "Contact Updated!",
+          description: "Application Updated!",
+          duration: 2000,
         });
         handleSheetOpenChange(false);
       } catch (error) {
@@ -561,7 +566,8 @@ export default function Applications() {
       await Axios.post(`${hostURL}/applications/${applicationId}/delete`);
       await fetchApplications();
       toast({
-        description: "Contact deleted!",
+        description: "Application deleted!",
+        duration: 2000,
       });
     } catch (error) {
       console.error("Error deleting application:", error);
@@ -645,6 +651,10 @@ export default function Applications() {
       (application) => application.status == statusChoice
     );
     setFilteredApplications(currentFilteredApplications);
+    toast({
+      description: `Filtered by ${statusChoice}`,
+      duration: 2000,
+    });
   };
 
   return (
